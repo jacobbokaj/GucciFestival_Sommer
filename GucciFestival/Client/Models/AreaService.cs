@@ -6,7 +6,8 @@ namespace GucciFestival.Client.Models
         private int id;
         private string name;
         private Shift shift;
-        private Coordiantor coordiantor;
-        
+        private Coordinator coordinator;
+        private string description;
+        p
     }
 }
