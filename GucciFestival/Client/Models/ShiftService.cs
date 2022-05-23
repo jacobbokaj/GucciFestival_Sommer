@@ -12,6 +12,6 @@
         private string description;
         private string task;
         private VolunteerService voolunteerService;
-
+        public int cake;
     }
 }
