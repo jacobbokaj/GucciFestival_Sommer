@@ -4,5 +4,6 @@
     {
         private string name;
         private string guard;
+        private string wasup;
     }
 }
