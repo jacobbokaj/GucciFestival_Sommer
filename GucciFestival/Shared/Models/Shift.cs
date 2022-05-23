@@ -8,6 +8,6 @@ namespace GucciFestival.Shared.Models
 {
     public class Shift
     {
-        h
+        
     }
 }

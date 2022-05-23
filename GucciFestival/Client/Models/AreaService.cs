@@ -7,6 +7,6 @@ namespace GucciFestival.Client.Models
         private string name;
         private Shift shift;
         public int ff;
-        h
+        
     }
 }
