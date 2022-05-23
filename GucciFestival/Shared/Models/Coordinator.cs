@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace GucciFestival.Shared.Models
 {
 
-        public class Coordiantor
+        public class Coordinator
         {
             //Her er de properties vi gerne vil læse fra vores shelterdatabase
             [Required]
