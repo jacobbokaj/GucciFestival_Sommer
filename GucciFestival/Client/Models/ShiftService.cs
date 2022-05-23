@@ -1,17 +1,21 @@
-﻿namespace GucciFestival.Client.Models
+﻿using GucciFestival.Client.Services;
+using GucciFestival.Shared.Models;
+using System.Net.Http.Json;
+
+namespace GucciFestival.Client.Models
 {
-    public class ShiftService
+    public class ShiftService : IShiftService
     {
-        private int id;
-        public int Id { get => id; private set => id = value; }
+        private readonly HttpClient httpClient;
 
-        private string name;
-        private DateTime startDate;
-        private DateTime endDate;
-
-        private string description;
-        private string task;
-        private VolunteerService voolunteerService;
-        public int cake;
+        public ShiftService(HttpClient httpClient)
+        {
+           this.httpClient = httpClient;
+        }
+        public async Task<Shift[]?> GetAllShifts()
+        {
+            var result = await httpClient.GetFromJsonAsync<Shift[]>("api/shitapi");
+            return result;
+        }
     }
 }
