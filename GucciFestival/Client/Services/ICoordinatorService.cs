@@ -1,9 +1,11 @@
-﻿namespace GucciFestival.Client.Services
+﻿using GucciFestival.Shared.Models;
+
+namespace GucciFestival.Client.Services
 {
     public interface ICoordinatorService
     {
-        Task<Booking[]?> GetAllBookings();
-        Task<int> AddBooking(Booking booking);
+        Task<Coordinator[]?> GetAllCoordinators();
+        Task<int> AddCoordinator(Coordinator coordinator);
     }
 
 }

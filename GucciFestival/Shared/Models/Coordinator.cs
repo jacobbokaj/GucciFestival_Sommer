@@ -4,12 +4,11 @@ using System.ComponentModel.DataAnnotations;
 namespace GucciFestival.Shared.Models
 {
 
-        public class Coordiantor
+        public class Coordinator
         {
             //Her er de properties vi gerne vil læse fra vores shelterdatabase
             [Required]
-            public string Cvr_navn { get; set; 
-        public string Cvr_navnsaa { get; set; }
+            public string KoordinatorId { get; set;}
 
 
 
