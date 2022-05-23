@@ -1,6 +1,6 @@
 ﻿namespace GucciFestival.Client.Models
 {
-    public class GuardService
+    public class ShiftService
     {
         private int id;
         public int Id { get => id; private set => id = value; }

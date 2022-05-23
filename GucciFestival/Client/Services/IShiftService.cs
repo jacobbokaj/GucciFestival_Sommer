@@ -1,6 +1,6 @@
 ﻿namespace GucciFestival.Client.Services
 {
-    interface IGuardService
+    interface IShiftService
     {
        
     }
