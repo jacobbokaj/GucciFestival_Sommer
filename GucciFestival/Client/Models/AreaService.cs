@@ -8,6 +8,6 @@ namespace GucciFestival.Client.Models
         private Shift shift;
         private Coordinator coordinator;
         private string description;
-        p
+        
     }
 }
