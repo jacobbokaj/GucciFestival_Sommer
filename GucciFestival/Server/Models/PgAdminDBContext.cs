@@ -10,7 +10,7 @@ namespace GucciFestival.Server.Models
         public List<Shift> Shifts { get; private set; } = new List<Shift>();
         public List<Area> Areas { get; private set; } = new List<Area>();
 
-        public List<Volunteer> Volunteers { get; private set; } = new List<Volunteer>();
+    
         public PgAdminDBContext()
         {
                 Console.WriteLine("query SQL");
