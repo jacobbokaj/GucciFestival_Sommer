@@ -16,10 +16,10 @@ namespace GucciFestival.Client.Models
         }
         public async Task<Area[]?> GetAllAreas()
         {
-            var result = await httpClient.GetFromJsonAsync<Area[]>("api/areapi");
+            var result = await httpClient.GetFromJsonAsync<Area[]>("api/areaapi");
 
             return result;
         }
-
+      
     }
 }
