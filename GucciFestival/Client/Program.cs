@@ -20,10 +20,6 @@ builder.Services.AddHttpClient<IAreaService, AreaService>(client =>
 {
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
 });
-builder.Services.AddHttpClient<IVolunteerService, VolunteerService>(client =>
-{
-    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-});
 
 
 builder.Services.AddHttpClient<IUserService, UserService>(client =>

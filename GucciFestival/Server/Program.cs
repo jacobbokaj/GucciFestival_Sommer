@@ -12,7 +12,6 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
-builder.Services.AddScoped<IVolunteerRepository, VolunteerRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.

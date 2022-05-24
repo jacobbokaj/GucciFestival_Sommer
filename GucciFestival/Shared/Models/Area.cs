@@ -11,7 +11,7 @@ namespace GucciFestival.Shared.Models
         private int id;
         private string name;
         private Shift shift;
-        private Coordinator coordinator;
+        private User user;
         private string description;
     }
 }

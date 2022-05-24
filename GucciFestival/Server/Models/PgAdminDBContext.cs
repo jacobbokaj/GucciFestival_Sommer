@@ -13,7 +13,7 @@ namespace GucciFestival.Server.Models
     
         public PgAdminDBContext()
         {
-                Console.WriteLine("query SQL");
+            Console.WriteLine("query SQL");
 
             var constring = "UserID=Anders95;Password=Hejhej1234;Host=guccifestival.postgres.database.azure.com/postgres?sslmode=require;Port=5432;Database=gucci_festival_sommer";
            // var constring = $"postgres://Anders95:Hejhej1234@guccifestival.postgres.database.azure.com/postgres?sslmode=require";
