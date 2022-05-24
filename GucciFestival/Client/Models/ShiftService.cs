@@ -26,3 +26,4 @@ namespace GucciFestival.Client.Models
         }
     }
 }
+
