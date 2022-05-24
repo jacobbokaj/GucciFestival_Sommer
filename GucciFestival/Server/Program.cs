@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
-
+builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
