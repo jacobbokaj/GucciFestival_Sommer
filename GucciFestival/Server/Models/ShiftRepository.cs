@@ -12,7 +12,7 @@ namespace GucciFestival.Server.Models
             List<Shift> shifts = db.Shifts;
             return shifts;
         }
-        public List<Shift> AddShift()
+        public void AddShift(Shift shift)
         {
             throw new NotImplementedException();
         }

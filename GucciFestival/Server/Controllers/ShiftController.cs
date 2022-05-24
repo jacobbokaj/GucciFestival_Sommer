@@ -9,14 +9,14 @@ namespace GucciFestival.Server.Controllers
     [Route("api/shiftapi")]
     public class ShiftController : ControllerBase
     {
-        private readonly IShiftRepository Repository = new ShiftRepository();
+        private readonly IShiftRepository repository = new ShiftRepository();
 
         public ShiftController(IShiftRepository shiftRepository)
         {
             Console.WriteLine("Connection");
             if (shiftRepository != null)
             {
-                Repository = shiftRepository;
+                repository = shiftRepository;
             }
         }
 
@@ -24,13 +24,13 @@ namespace GucciFestival.Server.Controllers
         public IEnumerable<Shift> GetAllShifts()
         {
             Console.WriteLine("ConnectionGet");
-            return Repository.GetAllShifts();
+            return repository.GetAllShifts();
         }
 
-        [HttpGet]
-        public IEnumerable<Shift> AddShift()
+        [HttpPost]
+        public void AddShift(Shift shift)
         {
-            return Repository.AddShift();
+            repository.AddShift(shift);
         }
     }
 }

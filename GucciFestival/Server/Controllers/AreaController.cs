@@ -9,13 +9,13 @@ namespace GucciFestival.Server.Controllers
     [Route("api/areaapi")]
     public class AreaController : ControllerBase
     {
-        private readonly IAreaRepository Repository = new AreaRepository();
+        private readonly IAreaRepository repository = new AreaRepository();
 
         public AreaController(IAreaRepository areaRepository)
         {
             if (areaRepository != null)
             {
-                Repository = areaRepository;
+                repository = areaRepository;
                 Console.WriteLine("Connection Area");
             }
         }
@@ -23,7 +23,14 @@ namespace GucciFestival.Server.Controllers
         [HttpGet]
         public IEnumerable<Area> GetAllAreas()
         {
-            return Repository.GetAllAreas();
+            return repository.GetAllAreas();
         }
+
+        [HttpPost]
+        public void AddArea(Area area)
+        {
+            repository.AddArea(area);
+        }
+
     }
 }

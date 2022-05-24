@@ -29,5 +29,9 @@ namespace GucciFestival.Server.Models
 
             }
         }
+        public void Add(string sqlQuery)
+        {
+
+        }
     }
 }

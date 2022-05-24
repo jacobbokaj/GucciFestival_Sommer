@@ -7,5 +7,7 @@ namespace GucciFestival.Server.Services
     public interface IAreaRepository
     {
         List<Area> GetAllAreas();
+
+        void AddArea(Area area);
     }
 }

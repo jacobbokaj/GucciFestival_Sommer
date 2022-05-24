@@ -5,6 +5,6 @@ namespace GucciFestival.Server.Services
     public interface IShiftRepository
     {
         List<Shift> GetAllShifts();
-        List<Shift> AddShift();
+        void AddShift(Shift shift);
     }
 }

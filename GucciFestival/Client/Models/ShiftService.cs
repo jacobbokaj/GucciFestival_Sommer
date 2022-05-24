@@ -19,11 +19,6 @@ namespace GucciFestival.Client.Models
            this.httpClient = httpClient;
         }
         
-        public async Task<int> AddShift(Shift shift)
-        {
-            var result = await httpClient.PostAsJsonAsync<Shift>("api/shiftapi", shift);
-            return (int)result.StatusCode;
-        }
         /// <summary>
         /// Har kommunikation med "shiftapi", som er "ShiftController" i "GucciFestival.Server".
         /// Siden det er httpclient, bruger den [HttpGet] for at få dataen.
@@ -37,6 +32,11 @@ namespace GucciFestival.Client.Models
             Console.WriteLine("GetAllShifts");
             var result = await httpClient.GetFromJsonAsync<Shift[]>("api/shiftapi");
             return result;
+        }
+        public async Task<int> AddShift(Shift shift)
+        {
+            var result = await httpClient.PostAsJsonAsync<Shift>("api/shiftapi", shift);
+            return (int)result.StatusCode;
         }
     }
 }

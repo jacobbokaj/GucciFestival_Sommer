@@ -23,5 +23,11 @@ namespace GucciFestival.Server.Controllers
         {
             return repository.GetAllUsers();
         }
+
+        [HttpPost]
+        public void AddUser(User user)
+        {
+            repository.AddUser(user);
+        }
     }
 }
