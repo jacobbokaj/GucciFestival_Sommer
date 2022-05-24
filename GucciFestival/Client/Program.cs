@@ -1,4 +1,6 @@
 using GucciFestival.Client;
+using GucciFestival.Client.Models;
+using GucciFestival.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
