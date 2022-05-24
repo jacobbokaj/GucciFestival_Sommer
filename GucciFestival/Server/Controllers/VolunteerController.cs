@@ -3,8 +3,11 @@ using GucciFestival.Server.Services;
 using GucciFestival.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace GucciFestival.Server.Controllers
 {
+    [ApiController]
+    [Route("api/volunteerapi")]
     public class VolunteerController : ControllerBase
     {
 
@@ -23,7 +26,7 @@ namespace GucciFestival.Server.Controllers
             return Repository.GetAllVolunteers();
         
         }
-        [HttpGet]
+        [HttpPost]
         public IEnumerable<Volunteer> AddVolunteer()
         {
             return Repository.AddVolunteer();

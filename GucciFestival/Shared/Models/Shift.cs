@@ -22,6 +22,13 @@ namespace GucciFestival.Shared.Models
         private string competence;
         public Competences Competence { get; set; }
         public string cake;
-      //  private VolunteerService voolunteerService;
+        //  private VolunteerService voolunteerService;
+
+
+        public Shift()
+        {
+
+        }
+        
     }
 }

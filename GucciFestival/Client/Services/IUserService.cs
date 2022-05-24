@@ -2,8 +2,8 @@
 
 namespace GucciFestival.Client.Services
 {
-    public interface IAreaService
+    public interface IUserService
     {
-        public Task<Area[]?> GetAllAreas();
+        public Task<User[]?> GetAllUsers();
     }
 }

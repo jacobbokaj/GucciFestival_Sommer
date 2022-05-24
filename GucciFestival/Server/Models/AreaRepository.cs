@@ -6,9 +6,12 @@ namespace GucciFestival.Server.Models
 {
     public class AreaRepository : IAreaRepository
     {
+        PgAdminDBContext db = new PgAdminDBContext();
         public List<Area> GetAllAreas()
         {
-            throw new NotImplementedException();
+
+            List<Area> list = db.Areas;
+            return list;
         }
     }
 }

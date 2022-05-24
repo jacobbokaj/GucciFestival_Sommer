@@ -1,6 +1,9 @@
 ﻿@page "/fetchdata"
+@using GucciFestival.Client.Services
 @using GucciFestival.Shared
+@using GucciFestival.Shared.Models
 @inject HttpClient Http
+
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -40,8 +43,33 @@ else
 @code {
     private WeatherForecast[]? forecasts;
 
+    //private List<Shift> shifts = new List<Shift>();
+    //[Inject]
+    //private IShiftService ServiceShift { get; set; }
+
+    //private List<Area> areas = new List<Area>();
+    //[Inject]
+    //private IAreaService ServiceArea { get; set;  }
+
+    //private List<Volunteer> volunteers = new List<Volunteer>();
+    //[Inject]
+    //private IVolunteerService ServiceVolunteer { get; set; }
+
+    private List<User> users = new List<User>();
+    [Inject]
+    private IUserService ServiceUser { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Hej");
+    }
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        users = (await ServiceUser.GetAllUsers()).ToList();
+        // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        // areas = (await ServiceArea.GetAllAreas()).ToList();
+        //  shifts = (await ServiceShift.GetAllShifts()).ToList();
+       // volunteers = (await ServiceVolunteer.GetAllVolunteers()).ToList();
+
     }
 }

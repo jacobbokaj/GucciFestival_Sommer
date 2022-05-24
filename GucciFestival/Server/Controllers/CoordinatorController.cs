@@ -23,7 +23,7 @@ namespace GucciFestival.Server.Controllers
         {
             return Repository.GetAllCoordinators();
         }
-        [HttpGet]
+        [HttpPost]
         public IEnumerable<Coordinator> AddCoordinator()
         {
             return Repository.AddCoordinator();

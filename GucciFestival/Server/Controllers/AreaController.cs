@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GucciFestival.Server.Controllers
 {
+    [ApiController]
+    [Route("api/areaapi")]
     public class AreaController : ControllerBase
     {
         private readonly IAreaRepository Repository = new AreaRepository();
@@ -14,6 +16,7 @@ namespace GucciFestival.Server.Controllers
             if (areaRepository != null)
             {
                 Repository = areaRepository;
+                Console.WriteLine("Connection Area");
             }
         }
 
