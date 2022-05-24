@@ -23,5 +23,10 @@ namespace GucciFestival.Server.Controllers
             return Repository.GetAllShifts();
         }
 
+        [HttpGet]
+        public IEnumerable<Shift> AddShift()
+        {
+            return Repository.AddShift();
+        }
     }
 }
