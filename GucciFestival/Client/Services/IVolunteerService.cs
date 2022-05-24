@@ -1,7 +1,10 @@
-﻿namespace GucciFestival.Client.Services
+﻿using GucciFestival.Shared.Models;
+
+namespace GucciFestival.Client.Services
 {
     public interface IVolunteerService
     {
-        public Task<int>
+        Task<Volunteer[]?> GetAllVolunteers();
+        Task<int> AddVolunteer(Volunteer volunteer);
     }
 }

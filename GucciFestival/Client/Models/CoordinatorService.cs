@@ -23,7 +23,6 @@ namespace GucciFestival.Client.Models
                 var result = await httpClient.PostAsJsonAsync<Coordinator>("api/coordinatorapi", coordinator);
                 return (int)result.StatusCode;
 
-            //123
             }
 
         

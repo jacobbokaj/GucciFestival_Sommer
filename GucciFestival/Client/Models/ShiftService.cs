@@ -33,5 +33,11 @@ namespace GucciFestival.Client.Models
           
             return result;
         }
+        public async Task<int> AddShift(Shift shift)
+        {
+            var result = await httpClient.PostAsJsonAsync<Shift>("api/shiftapi", shift);
+            return (int)result.StatusCode;
+        }
     }
 }
+
