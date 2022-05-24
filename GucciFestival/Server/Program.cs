@@ -1,3 +1,5 @@
+using GucciFestival.Server.Models;
+using GucciFestival.Server.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
-
+builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
