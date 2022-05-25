@@ -11,8 +11,10 @@ namespace GucciFestival.Server.Models
 
         public List<Area> GetAllAreas()
         {
-
-            List<Area> list = db.Areas;
+            List<Area> list = new List<Area>();
+            list.Add(new Area());
+            list[0].Name = "lets go";
+            //List<Area> list = db.Areas;
             return list;
         }
         public void AddArea(Area area)

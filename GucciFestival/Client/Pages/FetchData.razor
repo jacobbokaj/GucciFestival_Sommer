@@ -47,9 +47,9 @@ else
     //[Inject]
     //private IShiftService ServiceShift { get; set; }
 
-    //private List<Area> areas = new List<Area>();
-    //[Inject]
-    //private IAreaService ServiceArea { get; set;  }
+    private List<Area> areas = new List<Area>();
+    [Inject]
+    private IAreaService ServiceArea { get; set;  }
 
     //private List<Volunteer> volunteers = new List<Volunteer>();
     //[Inject]
@@ -65,9 +65,9 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        users = (await ServiceUser.GetAllUsers()).ToList();
+       // users = (await ServiceUser.GetAllUsers()).ToList();
         // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-        // areas = (await ServiceArea.GetAllAreas()).ToList();
+         areas = (await ServiceArea.GetAllAreas()).ToList();
         //  shifts = (await ServiceShift.GetAllShifts()).ToList();
        // volunteers = (await ServiceVolunteer.GetAllVolunteers()).ToList();
 

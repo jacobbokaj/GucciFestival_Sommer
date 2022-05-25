@@ -8,8 +8,8 @@ namespace GucciFestival.Shared.Models
 {
     public enum Competences
     {
-        ToiletWash,
-        Soldier,
-        Bi
+        ToiletWash = 0,
+        Soldier = 1,
+        Bi = 2
     }
 }

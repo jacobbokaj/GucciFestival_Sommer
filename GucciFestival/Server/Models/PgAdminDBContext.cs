@@ -18,16 +18,16 @@ namespace GucciFestival.Server.Models
             var constring = "UserID=Anders95;Password=Hejhej1234;Host=guccifestival.postgres.database.azure.com/postgres?sslmode=require;Port=5432;Database=gucci_festival_sommer";
            // var constring = $"postgres://Anders95:Hejhej1234@guccifestival.postgres.database.azure.com/postgres?sslmode=require";
             var sql = "SELECT navn, område_id, bruger_id, festival_id FROM festival; ";
-            using (var connection = new NpgsqlConnection(constring))
-            {
-                var test_sqlss = connection.Query<Shift>(sql);
-                foreach (var tt in test_sqlss)
-                {
-                    Console.WriteLine($"{tt.Id}");
+            //using (var connection = new NpgsqlConnection(constring))
+            //{
+            //    var test_sqlss = connection.Query<Shift>(sql);
+            //    foreach (var tt in test_sqlss)
+            //    {
+            //        Console.WriteLine($"{tt.Id}");
 
-                }
+            //    }
 
-            }
+            //}
         }
         public void Add(string sqlQuery)
         {

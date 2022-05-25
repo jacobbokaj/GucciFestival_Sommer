@@ -10,8 +10,14 @@ namespace GucciFestival.Shared.Models
     {
         private int id;
         private string name;
-        private Shift shift;
+        private List<Shift> shifts;
         private User user;
         private string description;
+
+        public int Id { get => id; set => id = value; }
+        public string Name { get => name; set => name = value; }
+        public List<Shift> Shifts { get => shifts; set => shifts = value; }
+        public User User { get => user; set => user = value; }
+        public string Description { get => description; set => description = value; }
     }
 }

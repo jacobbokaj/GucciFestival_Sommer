@@ -20,6 +20,10 @@ namespace GucciFestival.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Dette fungere ligesom en list foreach. Men kan kun læses ikke ændres i.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<Area> GetAllAreas()
         {
