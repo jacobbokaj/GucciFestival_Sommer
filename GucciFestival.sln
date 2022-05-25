@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GucciFestival.Server", "GucciFestival\Server\GucciFestival.Server.csproj", "{49510D71-5F34-471D-88D9-1D2DEDDB5379}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GucciFestival.Server", "GucciFestival\Server\GucciFestival.Server.csproj", "{49510D71-5F34-471D-88D9-1D2DEDDB5379}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GucciFestival.Client", "GucciFestival\Client\GucciFestival.Client.csproj", "{6D8D4CAD-9BE9-4B4D-9EAE-A7DF427E5503}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GucciFestival.Client", "GucciFestival\Client\GucciFestival.Client.csproj", "{6D8D4CAD-9BE9-4B4D-9EAE-A7DF427E5503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GucciFestival.Shared", "GucciFestival\Shared\GucciFestival.Shared.csproj", "{4590EBCB-EC9C-4439-ADD7-B2BFE99CBC58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GucciFestival.Shared", "GucciFestival\Shared\GucciFestival.Shared.csproj", "{4590EBCB-EC9C-4439-ADD7-B2BFE99CBC58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
