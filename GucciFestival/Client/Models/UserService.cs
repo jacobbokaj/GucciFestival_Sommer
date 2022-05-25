@@ -26,6 +26,7 @@ namespace GucciFestival.Client.Models
         /// <returns></returns>
         public Task<User[]?> GetAllUsers()
         {
+            Console.WriteLine("In await");
             var result = httpClient.GetFromJsonAsync<User[]>("api/userapi");
             return result;
         }
@@ -34,5 +35,6 @@ namespace GucciFestival.Client.Models
             var result = await httpClient.PostAsJsonAsync<User>("api/userapi", user);
             return (int)result.StatusCode;
         }
+
     }
 }

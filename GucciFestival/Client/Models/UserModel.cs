@@ -1,11 +1,12 @@
 ﻿using GucciFestival.Shared.Models;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace GucciFestival.Client.Models
 {
     //Hej
     public class UserModel
     {
+        [Required]
         public string Name { get; set; }
         public DateTime Birthday { get; set; } = DateTime.Now;
 

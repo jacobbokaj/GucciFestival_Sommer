@@ -1,38 +1,69 @@
 ﻿@using GucciFestival.Client.Models
+@using GucciFestival.Client.Services
+@using GucciFestival.Shared.Models
+@using Nito.AsyncEx;
 @page "/login"
 <h3>Opret Konto</h3>
 <EditForm EditContext=@editContext class="row p-3"
-OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
-<DataAnnotationsValidator/>
-<ValidationSummary/>
-<div class="col-md-12 mb-3">
-	<label for="Name">Name:</label>
-	<InputText id="Name" @bind-Value="userModel.Name"/>
-</div>
-<div class="col-md-12 mb-3">
-	<label for="Email">Email:</label>
-	<InputText id="Email" @bind-Value="userModel.Email"/>
-</div>
-<div class="col-md-12 mb-3">
-	<label for="Password">Password:</label>
-	<InputText id="Password" @bind-Value="userModel.Password"/>
-</div>
-<div class="col-md-12 mb-3">
-	<label for="Tlf">Tlf:</label>
-	<InputNumber id="Tlf" @bind-Value="userModel.Tlf"/>
-</div>
-<div class="col-md-12 mb-3">
-	<label for="Birthday">Birthday:</label>
-	<InputDate id="Birthday" @bind-Value="userModel.Birthday"/>
-</div>
+          OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-md-12 mb-3">
+        <label for="Name">Name:</label>
+        <InputText id="Name" @bind-Value="userModel.Name" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label for="Email">Email:</label>
+        <InputText id="Email" @bind-Value="userModel.Email" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label for="Password">Password:</label>
+        <InputText id="Password" @bind-Value="userModel.Password" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label for="Tlf">Tlf:</label>
+        <InputNumber id="Tlf" @bind-Value="userModel.Tlf" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label for="Birthday">Birthday:</label>
+        <InputDate id="Birthday" @bind-Value="userModel.Birthday" />
+    </div>
+    <button type="submit" class="btn-outline-primary">Opret</button>
+    <button @onsubmit=@(async () => await GetUsers())>Get users Without submit</button>
 </EditForm>
+<button onclick=@(async () => await GetUsers())>On click get users</button>
+<button onclick=@(async () => await AddUser())>On click Add user</button>
 @code {
-	private EditContext editContext;
-	private UserModel userModel = new UserModel();
-	protected override void OnInitialized()
-	{
-		editContext = new EditContext(userModel);
-	}
-	public void HandleValidSubmit() {}
-	public void HandleInvalidSubmit() {}
+    private EditContext editContext;
+    private UserModel userModel = new UserModel();
+
+    private List<User> users = new List<User>();
+    [Inject]
+    public IUserService UserService { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(userModel);
+    }
+    public void HandleValidSubmit()
+    {
+        //var task = GetUsers();
+        //  AsyncContext.Run(GetUsers);
+
+    }
+
+    public async Task AddUser()
+    {
+        Console.WriteLine("Start add user");
+        User user = new User();
+       // user.Name = "Hans";
+        await UserService.AddUser(user);
+    }
+    public async Task GetUsers()
+    {
+    //    Console.WriteLine("Get User In page");
+      //  users = (await UserService.GetAllUsers()).ToList();
+    }
+    public void HandleInvalidSubmit() { }
 }
