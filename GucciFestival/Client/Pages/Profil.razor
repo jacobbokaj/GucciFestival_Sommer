@@ -6,44 +6,39 @@
 OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 <DataAnnotationsValidator/>
 <ValidationSummary/>
-<div class="mb-3">
+<div class="col-mb-4">
 	<label for="Name">Name:</label>
-	<InputText class="Profil" id="Name" @bind-Value="userModel.Name"/>
+	<InputText id="Name" @bind-Value="userModel.Name" class="form-control"/>
 </div>
-<div class="mb-3">
+<div class="col-mb-4">
 	<label for="Email">Email:</label>
-	<InputText class="Profil" id="Email" @bind-Value="userModel.Email"/>
+	<InputText id="Email" @bind-Value="userModel.Email" class="form-control"/>
 </div>
-<div class="mb-3">
+<div class="col-mb-4">
 	<label for="Password">Password:</label>
-	<InputText class="Profil" id="Password" @bind-Value="userModel.Password"/>
+	<InputText id="Password" @bind-Value="userModel.Password" class="form-control"/>
 </div>
-<div class="mb-3">
+<div class="col-mb-4">
 	<label for="Tlf">Tlf:</label>
-	<InputNumber class="Profil" id="Tlf" @bind-Value="userModel.Tlf"/>
+	<InputNumber id="Tlf" @bind-Value="userModel.Tlf" class="form-control"/>
 </div>
-<div class="mb-3">
+<div class="col-mb-4">
 	<label for="Birthday">Birthday:</label>
-	<InputDate class="Profil" id="Birthday" @bind-Value="userModel.Birthday"/>
+	<InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control"/>
 </div>
 <Button id="button1"> Opdater profil</Button> 
 <Button id="button2"> Slet Profil</Button> 
 
 <style>
-	div {
-		color: midnightblue;
-		font-style: italic;
-	}
-	.Profil {
-		position: absolute;
-		left: 40%;
-	}
+
 	#button1 {
 		background-color: forestgreen;
 		width: 125px;
 		border_radius: 8px;
 		color: white;
+		position: relative;
 	}
+
 	#button2 {
 		background-color: red;
 		width: 125px;
@@ -51,6 +46,7 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 		color: white;
 		position: relative;
 		left: 3%;
+		
 	}
 
 </style>
