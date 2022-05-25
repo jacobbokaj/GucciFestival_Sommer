@@ -16,7 +16,8 @@ namespace GucciFestival.Server.Models
         }
         public void AddUser(User user)
         {
-            throw new NotImplementedException();
+            string sql = "";
+            db.Add(sql);
         }
     }
 }
