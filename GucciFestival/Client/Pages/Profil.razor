@@ -1,0 +1,72 @@
+﻿@using GucciFestival.Client.Models
+@page "/profil"
+<h3>Profil</h3>
+
+<EditForm EditContext=@editContext class="row p-3"
+OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
+<DataAnnotationsValidator/>
+<ValidationSummary/>
+<div class="mb-3">
+	<label for="Name">Name:</label>
+	<InputText class="Profil" id="Name" @bind-Value="userModel.Name"/>
+</div>
+<div class="mb-3">
+	<label for="Email">Email:</label>
+	<InputText class="Profil" id="Email" @bind-Value="userModel.Email"/>
+</div>
+<div class="mb-3">
+	<label for="Password">Password:</label>
+	<InputText class="Profil" id="Password" @bind-Value="userModel.Password"/>
+</div>
+<div class="mb-3">
+	<label for="Tlf">Tlf:</label>
+	<InputNumber class="Profil" id="Tlf" @bind-Value="userModel.Tlf"/>
+</div>
+<div class="mb-3">
+	<label for="Birthday">Birthday:</label>
+	<InputDate class="Profil" id="Birthday" @bind-Value="userModel.Birthday"/>
+</div>
+<Button id="button1"> Opdater profil</Button> 
+<Button id="button2"> Slet Profil</Button> 
+
+<style>
+	div {
+		color: midnightblue;
+		font-style: italic;
+	}
+	.Profil {
+		position: absolute;
+		left: 40%;
+	}
+	#button1 {
+		background-color: forestgreen;
+		width: 125px;
+		border_radius: 8px;
+		color: white;
+	}
+	#button2 {
+		background-color: red;
+		width: 125px;
+		border_radius: 8px;
+		color: white;
+		position: relative;
+		left: 3%;
+	}
+
+</style>
+</EditForm>
+@code {
+	private EditContext editContext;
+	private UserModel userModel = new UserModel();
+	protected override void OnInitialized()
+	{
+		userModel.Email = "se-b@live.dk";
+		userModel.Name = "Sebastian Søborg";
+		userModel.Password = "1234";
+		userModel.Tlf = 12345678;
+		
+		editContext = new EditContext(userModel);
+	}
+	public void HandleValidSubmit() {}
+	public void HandleInvalidSubmit() {}
+}
