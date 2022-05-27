@@ -8,21 +8,21 @@ namespace GucciFestival.Shared.Models
 {
     public class Shift
     {
-        private int id;
-        public int Id { get => id; private set => id = value; }
+      
 
-        private string name = "WWWW";
-        public string Name { get => name;}
 
-        private DateTime startDate;
-        private DateTime endDate;
+        public string Name { get; set; }
 
-        private string description;
-        private string task;
-        private string competence;
-        public string cake;
+        public DateTime Start_Date { get; set; }
+        public DateTime End_Date { get; set; }
+
+        public string Description { get; set; }
+        public int Competence_id { get; set; }
+
+
+        public int Shift_id { get; set; } 
         //  private VolunteerService voolunteerService;
-
+        
 
         public Shift()
         {

@@ -8,10 +8,10 @@ namespace GucciFestival.Shared.Models
 {
     public class User
     {
-        public string? Name { get; private set; }
+        public string? Name { get; set; }
         public DateTime? Birthday { get; private set; } = DateTime.Now;
-        public string? Email { get; private set; }
-        public int? Tlf { get; private set; }
+        public string? Email { get; set; }
+        public int? Phone { get; private set; }
 
         public string? Password;
         public int? Competence_id;
@@ -32,19 +32,19 @@ namespace GucciFestival.Shared.Models
 
         //    CoordinatorFlag = coordinatorFlag;
         //}
-        //public User(string name, string email, int tlf, string password, int competence_id, int user_id, int type_id, string type)
-        //{
-        //    Name = name;
+        public User(string name, string email,DateTime birthday, int phone, string password, int competence_id, int user_id, int type_id, string type)
+        {
+            Name = name;
 
-        //    Email = email;
-        //    Tlf = tlf;
-        //    Password = password;
-        //    Competence_id = competence_id;
-        //    User_id = user_id;
-        //    Type_id = type_id;
-        //    Type = type;
-        //    Birthday = DateTime.Now;
-        //}
+            Email = email;
+            Phone = phone;
+            Password = password;
+            Competence_id = competence_id;
+            User_id = user_id;
+            Type_id = type_id;
+            Type = type;
+            Birthday = birthday;
+        }
         public User()
         {
 

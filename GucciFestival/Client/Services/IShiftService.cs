@@ -2,10 +2,13 @@
 
 namespace GucciFestival.Client.Services
 {
-    interface IShiftService
+    public interface IShiftService
     {
         public Task<Shift[]?> GetAllShifts();
 
         Task<int> AddShift(Shift shift);
+
+        Task<int> DeleteShift(Shift shift);
+        Task<int> UpdateShift(Shift shift);
     }
 }

@@ -28,6 +28,8 @@ namespace GucciFestival.Client.Models
         {
             Console.WriteLine("In await");
             var result = httpClient.GetFromJsonAsync<User[]>("api/userapi");
+
+            
             return result;
         }
         public async Task<int> AddUser(User user)

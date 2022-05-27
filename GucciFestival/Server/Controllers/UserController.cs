@@ -21,6 +21,10 @@ namespace GucciFestival.Server.Controllers
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
+            foreach (var item in repository.GetAllUsers())
+            {
+                Console.WriteLine("Data: " +item.Name);
+            }
             return repository.GetAllUsers();
         }
 

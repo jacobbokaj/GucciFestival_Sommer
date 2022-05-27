@@ -6,5 +6,7 @@ namespace GucciFestival.Server.Services
     {
         List<Shift> GetAllShifts();
         void AddShift(Shift shift);
+        bool DeleteShift(int id);
+        bool UpdateShift(Shift shift);
     }
 }

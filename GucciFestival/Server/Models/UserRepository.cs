@@ -9,16 +9,17 @@ namespace GucciFestival.Server.Models
 
         public List<User> GetAllUsers()
         {
-            //List<User> users = new List<User>();
-            //users.Add(new User());
-
-            return db.Users;
+          //  db.Get("SELECT name,birthday, email, phone, password, competence_id, user_id, type_id, type  FROM \"User\";");
+            List<User> users = new List<User>();
+            users.Add(new User());
+            users[0].Name = "hihi xd";
+            return users;
         }
         public void AddUser(User user)
         {
             Console.WriteLine("Add user in server user");
-            string sql = "CALL creat_user('Kim','1995-05-10','Kimmi@gmail.gg','2321','hewaj','2','6','1','gfwww')";
-            db.Add(sql);
+            string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.Competence_id}','{user.User_id}','{user.Type_id}','{user.Type}')";
+            db.CUD(sql);
         }
     }
 }

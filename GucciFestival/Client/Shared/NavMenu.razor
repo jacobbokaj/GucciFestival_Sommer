@@ -7,28 +7,56 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+@if (sideFlag)
+{   
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <nav class="flex-column">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </div>
   
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-                   <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
-            </NavLink>
-        </div>
-        </div>
-    </nav>
-</div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="fetchdata">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                </NavLink>
+                       <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
+                </NavLink>
+            </div>
+            </div>
+        </nav>
+    </div>
+    }
+else
+    {
+       <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <nav class="flex-column">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </div>
+  
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="fetchdata">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Sol sovs
+                </NavLink>
+                       <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="oi oi-home" aria-hidden="true"></span> Yugurt
+                </NavLink>
+                
+            </div>
+            </div>
+        </nav>
+    </div> 
+    }
 
 @code {
+    public static bool sideFlag;
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -37,4 +65,11 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    public static void ChangeSideFlag()
+    {
+        sideFlag = sideFlag ? false : true;
+       
+        Console.WriteLine("sideFlag: " + sideFlag);
+    }
+
 }

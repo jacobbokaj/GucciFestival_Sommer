@@ -2,12 +2,15 @@
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
 @using Nito.AsyncEx;
+@inject NavigationManager NavManager
 @page "/login"
+@using GucciFestival.Shared;
 <h3>Opret Konto</h3>
 <EditForm EditContext=@editContext class="row p-3"
           OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <h4>@userLoginMessage</h4>
     <div class="col-md-12 mb-3">
         <label for="Name">Name:</label>
         <InputText id="Name" @bind-Value="userModel.Name" />
@@ -28,16 +31,18 @@
         <label for="Birthday">Birthday:</label>
         <InputDate id="Birthday" @bind-Value="userModel.Birthday" />
     </div>
-    <button type="submit" class="btn-outline-primary">Opret</button>
-    <button @onsubmit=@(async () => await GetUsers())>Get users Without submit</button>
+    <button type="submit" class="btn-outline-primary">Login</button>
+
+    <button type="submit" class="btn-outline-primary">Change navmenu</button>
 </EditForm>
-<button onclick=@(async () => await GetUsers())>On click get users</button>
-<button onclick=@(async () => await AddUser())>On click Add user</button>
+    @*<button @onsubmit=@(async () => await UserAdd())>Add user</button>*@
 @code {
     private EditContext editContext;
     private UserModel userModel = new UserModel();
 
     private List<User> users = new List<User>();
+    private string userLoginMessage;
+    private User userTarget = new User();
     [Inject]
     public IUserService UserService { get; set; }
 
@@ -45,25 +50,59 @@
     protected override void OnInitialized()
     {
         editContext = new EditContext(userModel);
+        userLoginMessage = string.Empty;
+
+        users.Add(new User());
+        users[0].Name = "Kimmi";
+        users[0].Email = "kimmmmii@h";
     }
-    public void HandleValidSubmit()
+    protected override async Task OnInitializedAsync()
     {
-        //var task = GetUsers();
-        //  AsyncContext.Run(GetUsers);
-
+        //users = (await UserService.GetAllUsers()).ToList();      
     }
 
-    public async Task AddUser()
+
+    private void ChangeSide()
+    {
+        NavMenu.ChangeSideFlag();
+    }
+
+    public void UserLogin()
+    {
+        userTarget = null;
+        Console.WriteLine("List User: " + users.Count);
+        foreach (var userLooping in users)
+        {
+            Console.WriteLine("Email userloop: " + userLooping.Email + "Email usermodel: " + userModel.Email + " password userloop: " + userLooping.Password + " password usermodel " + userModel.Password);
+            if (userLooping.Email == userModel.Email &&
+                userLooping.Password == userModel.Password)
+            {
+                userTarget = userLooping;
+                break;
+            }
+        }
+        NavManager.NavigateTo("/userownside");
+        userLoginMessage = userTarget != null ? "Found user" : "Not found user";
+    }
+
+
+    public async Task UserAdd()
     {
         Console.WriteLine("Start add user");
-        User user = new User();
-       // user.Name = "Hans";
+        User user = new User(userModel.Name, userModel.Email,userModel.Birthday,
+                             userModel.Tlf,userModel.Password,/*Placeholder Comptence*/2,
+                                /*User_id*/7,1,"default");
         await UserService.AddUser(user);
     }
-    public async Task GetUsers()
+
+    public void HandleValidSubmit()
     {
-    //    Console.WriteLine("Get User In page");
-      //  users = (await UserService.GetAllUsers()).ToList();
+        Console.WriteLine("Hello handle Valid");
+        UserLogin();
+       // ChangeSide();
     }
-    public void HandleInvalidSubmit() { }
+    public void HandleInvalidSubmit()
+    {
+        Console.WriteLine("Hello handle not valid");
+    }
 }

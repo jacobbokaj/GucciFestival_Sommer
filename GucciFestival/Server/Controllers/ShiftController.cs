@@ -32,5 +32,15 @@ namespace GucciFestival.Server.Controllers
         {
             repository.AddShift(shift);
         }
+        [HttpDelete]
+        public void DeleteShift(int id)
+        {
+
+        }
+        [HttpPut]
+        public void Update(Shift shift)
+        {
+            repository.UpdateShift(shift);
+        }
     }
 }
