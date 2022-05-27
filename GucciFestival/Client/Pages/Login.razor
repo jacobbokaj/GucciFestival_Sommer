@@ -5,51 +5,104 @@
 @inject NavigationManager NavManager
 @page "/login"
 @using GucciFestival.Shared;
-<h3>Opret Konto</h3>
-<EditForm EditContext=@editContext class="row p-3"
-          OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <h4>@userLoginMessage</h4>
-    <div class="col-md-12 mb-3">
-        <label for="Name">Name:</label>
-        <InputText id="Name" @bind-Value="userModel.Name" />
-    </div>
-    <div class="col-md-12 mb-3">
-        <label for="Email">Email:</label>
-        <InputText id="Email" @bind-Value="userModel.Email" />
-    </div>
-    <div class="col-md-12 mb-3">
-        <label for="Password">Password:</label>
-        <InputText id="Password" @bind-Value="userModel.Password" />
-    </div>
-    <div class="col-md-12 mb-3">
-        <label for="Tlf">Tlf:</label>
-        <InputNumber id="Tlf" @bind-Value="userModel.Tlf" />
-    </div>
-    <div class="col-md-12 mb-3">
-        <label for="Birthday">Birthday:</label>
-        <InputDate id="Birthday" @bind-Value="userModel.Birthday" />
-    </div>
-    <button type="submit" class="btn-outline-primary">Login</button>
 
-    <button type="submit" class="btn-outline-primary">Change navmenu</button>
-</EditForm>
+
+
+@if(sideOpret == null)
+{
+    
+
+
+    //Start side.
+
+
+
+
+}else if (sideOpret == true)
+{
+    <h3>Opret Konto</h3>
+    <EditForm EditContext=@editContextCreateUser class="row p-3"
+              OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <h4>@userLoginMessage</h4>
+        <div class="col-md-12 mb-3">
+            <label for="Name">Name:</label>
+            <InputText id="Name" @bind-Value="userModel.Name" />
+        </div>
+        <div class="col-md-12 mb-3">
+            <label for="Email">Email:</label>
+            <InputText id="Email" @bind-Value="userModel.Email" />
+        </div>
+        <div class="col-md-12 mb-3">
+            <label for="Password">Password:</label>
+            <InputText id="Password" @bind-Value="userModel.Password" />
+        </div>
+        <div class="col-md-12 mb-3">
+            <label for="Tlf">Tlf:</label>
+            <InputNumber id="Tlf" @bind-Value="userModel.Tlf" />
+        </div>
+        <div class="col-md-12 mb-3">
+            <label for="Birthday">Birthday:</label>
+            <InputDate id="Birthday" @bind-Value="userModel.Birthday" />
+        </div>
+        <button type="submit" class="btn-outline-primary">Login</button>
+
+        <button type="submit" class="btn-outline-primary">Change navmenu</button>
+    </EditForm>
+}else if(sideOpret == false)
+{
+    
+
+
+
+    //Login Side
+
+
+
+
+
+
+
+
+}
+
+
+
     @*<button @onsubmit=@(async () => await UserAdd())>Add user</button>*@
 @code {
-    private EditContext editContext;
-    private UserModel userModel = new UserModel();
+
+
 
     private List<User> users = new List<User>();
+    private bool? sideOpret;
+
+
+
+
+    private UserModel userModel = new UserModel();
+
+   
+    
+    
+    //For opret
+     
     private string userLoginMessage;
+    private EditContext editContextCreateUser;
+
+
+
+
     private User userTarget = new User();
+    //Useless
     [Inject]
     public IUserService UserService { get; set; }
 
 
     protected override void OnInitialized()
     {
-        editContext = new EditContext(userModel);
+        sideOpret = null;
+        editContextCreateUser = new EditContext(userModel);
         userLoginMessage = string.Empty;
 
         users.Add(new User());
@@ -60,6 +113,50 @@
     {
         //users = (await UserService.GetAllUsers()).ToList();      
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Ikke tænk på det.
+
+
 
 
     private void ChangeSide()

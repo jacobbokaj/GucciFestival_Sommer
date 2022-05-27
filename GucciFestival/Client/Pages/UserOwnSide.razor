@@ -12,35 +12,46 @@
 }
 else
 {
-    
-<table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in shifts)
-            {
-                <tr>
-                    <td>@forecast.Name</td>
-                    <td>@(competences)forecast.Competence_id</td>
-                    <button @onclick="(() => SetShiftTagen(forecast))"></button>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @switch (side)
+    {
+        case Sides.AvailableShifts:
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Temp. (C)</th>
+                            <th>Temp. (F)</th>
+                            <th>Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var forecast in shifts)
+                        {
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@(competences)forecast.Competence_id</td>
+                                <button @onclick="(() => SetShiftTagen(forecast))">buttons</button>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            break;
+        case Sides.OwnShifts:
+            break;
+        case Sides.Read:
+            break;
+
+    }
+
+}
 }
 @code {
-    enum Sides{
+    public enum Sides{
         AvailableShifts,
         OwnShifts,
         Read
     }
-
+    private Sides side;
     private bool takenFlag;
 
     private User userTagen = new User();
