@@ -25,7 +25,7 @@ namespace GucciFestival.Server.Models
         {
             foreach (var shift in db.Shifts)
             {
-                if (shift.Shift_id == id)
+                if (shift.Shift_Id == id)
                 {
                     db.CUD("sql things....");
                     return true;

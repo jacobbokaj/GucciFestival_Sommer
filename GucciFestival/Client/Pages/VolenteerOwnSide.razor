@@ -1,0 +1,181 @@
+﻿
+@page "/userownSide"
+@using GucciFestival.Client.Services
+@using GucciFestival.Shared.Models
+@inject NavigationManager NavManager
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
+<h3>UserOwnSide</h3>
+<button @onclick=NavigateToSideProfil>Profil</button>
+<button @onclick="(() => SetShiftTarget(null,Sides.AvailableShifts,false))">Vagter ledige</button>
+<button @onclick="(() => SetShiftTarget(null,Sides.OwnShifts,false))">Egne vagter</button>
+@if(shifts.Count == 0){
+
+}
+else
+{
+    @switch (side)
+    {
+        case Sides.AvailableShifts:
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Temp. (C)</th>
+                            <th>Temp. (F)</th>
+                            <th>Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var forecast in shifts)
+                        {
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@(competences)forecast.Competence_id</td>
+                                <button @onclick="(() => SetShiftTarget(forecast,Sides.Read,false))">Tag vagt</button>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            break;
+        case Sides.OwnShifts:
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Temp. (C)</th>
+                            <th>Temp. (F)</th>
+                            <th>Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var forecast in shifts)
+                        {
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@(competences)forecast.Competence_id</td>
+                                <button @onclick="(() => SetShiftTarget(forecast,Sides.Read,true))">Se din vagt</button>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            break;
+        case Sides.Read:
+            <div>
+                <h4>Shift name @shiftTarget.Name</h4>
+
+                <h3>Start dato></h3>
+                <h3>@shiftTarget.Start_Date</h3>
+
+                <h3>Slut dato</h3>
+                <h3>@shiftTarget.End_Date</h3>
+
+                <h3>Description</h3>
+                <h3>@shiftTarget.Description</h3>
+
+
+                @if (ownShiftFlag == false)
+                {
+                 <h3>Sikker på at tage vagten?</h3>      
+                 <input type="checkbox" @bind=shiftTakeFlag/>
+                 <button @onclick=TakeShift>Tag vagten</button>
+                }
+
+
+
+            </div>
+            break;
+
+    }
+}
+@code {
+    public enum Sides{
+        AvailableShifts,
+        OwnShifts,
+        Read
+    }
+
+    /// <summary>
+    /// True= ownshift, false= overallShift
+    /// </summary>
+    private bool ownShiftFlag;
+    /// <summary>
+    /// Brugt til checkboks, checke om "user"/frivllig er sikker på at tage vagten
+    /// </summary>
+    private bool shiftTakeFlag;
+
+
+    private Sides side;
+    private bool takenFlag;
+
+    /// <summary>
+    /// Den frillige brugers her og får dataen ved hjælp af "blazored.localstorage"
+    /// Den frillige localstorage ved sat ind, da den frillige loggede ind.
+    /// </summary>
+    private User volenteerTarget = new User();
+    /// <summary>
+    /// What shift is taken from the list and will be checked out.
+    /// </summary>
+    private Shift shiftTarget = new Shift();
+    private List<Shift> shifts = new List<Shift>();
+    private Competences competences;
+
+
+
+
+
+    //Shift Information
+    private EditContext editContextShiftInfo;
+
+
+
+
+
+
+
+
+
+
+    [Inject]
+    public IShiftService ShiftService { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        //Henter alle vagter der findes på pgadmin/sql databasen.
+        shifts = (await ShiftService.GetAllShifts()).ToList();
+        //Henter den frilliges data, der blev gemt da den frillige loggede ind.
+        volenteerTarget = await localStore.GetItemAsync<User>("volenteer");
+    }
+
+
+
+    private void NavigateToSideProfil()
+    {
+        NavManager.NavigateTo("/profil");
+    }
+
+
+    private void TakeShift()
+    {
+        if (shiftTakeFlag)
+        {
+            foreach (var item in shifts)
+            {
+                if(item.Shift_Id == shiftTarget.Shift_Id)
+                {
+                    item.Shift_Taken_Id = volenteerTarget.User_id;
+                }
+            }
+            SetShiftTarget(null, Sides.AvailableShifts, false);
+        }
+    }
+
+
+    private void SetShiftTarget(Shift shift,Sides side,bool ownShiftFlag)
+    {
+        shiftTarget = shift;
+        this.side = side;
+        this.ownShiftFlag = ownShiftFlag;
+        Console.WriteLine("vagt info");
+
+    }
+}
