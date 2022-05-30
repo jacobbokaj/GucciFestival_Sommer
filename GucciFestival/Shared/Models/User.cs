@@ -15,7 +15,7 @@ namespace GucciFestival.Shared.Models
 
         public string? Password;
         public int? Competence_id;
-        public int? User_id;
+        public int User_id;
         public int? Type_id;
         public string? Type;
 

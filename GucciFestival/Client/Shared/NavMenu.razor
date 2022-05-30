@@ -1,4 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using GucciFestival.Client.Pages
+@using GucciFestival.Shared.NavigateMenus;
+@using GucciFestival.Shared.VolenteerPages;
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">GucciFestival</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -7,69 +11,109 @@
     </div>
 </div>
 
-@if (sideFlag)
-{   
-    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-        <nav class="flex-column">
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </NavLink>
-            </div>
+
+@switch (navigateMenu)
+{
+    case NavigateMenus.MainSide:
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
   
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="fetchdata">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-                </NavLink>
-                       <div class="nav-item px-3">
-                <NavLink class="nav-link" href="login">
-                    <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
-                </NavLink>
-            </div>
-            </div>
-        </nav>
-    </div>
-    }
-else
-    {
-       <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-        <nav class="flex-column">
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </NavLink>
-            </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="fetchdata">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                    </NavLink>
+                           <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login">
+                        <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
+                    </NavLink>
+                </div>
+                </div>
+            </nav>
+        </div>
+        break;
+    case NavigateMenus.Coordinator:
+        break;
+    case NavigateMenus.Volenteer:
+           <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
   
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="fetchdata">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Sol sovs
-                </NavLink>
-                       <div class="nav-item px-3">
-                <NavLink class="nav-link" href="login">
-                    <span class="oi oi-home" aria-hidden="true"></span> Yugurt
-                </NavLink>
+                <div class="nav-item px-3">
+                    <button @onclick= "(() => VolenteerPage(VolenteerPages.ShiftsOwn))">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Sol sovs
+                    </button>
+                  
+                           <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login">
+                        <span class="oi oi-home" aria-hidden="true"></span> Yugurt
+                    </NavLink>
                 
-            </div>
-            </div>
-        </nav>
-    </div> 
-    }
+                </div>
+                </div>
+            </nav>
+        </div> 
+
+        break;
+}
 
 @code {
-    public static bool sideFlag;
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+
+    private NavigateMenus navigateMenu;
+
+
+    private static event Action<NavigateMenus> navMenuChangeEvent;
+
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Navmenu Load");
+        if(navMenuChangeEvent == null){ navMenuChangeEvent += NewNavMenu;}
+    }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
-    public static void ChangeSideFlag()
+
+    public static void ChangeSideFlag(NavigateMenus navigateMenu)
     {
-        sideFlag = sideFlag ? false : true;
-       
-        Console.WriteLine("sideFlag: " + sideFlag);
+        navMenuChangeEvent?.Invoke(navigateMenu);
+
     }
 
+    private static void VolenteerPage(VolenteerPages volenteerPage)
+    {
+        VolenteerOwnPage.ButtonVolenteerPage(volenteerPage);
+    }
+
+    private void NewNavMenu(NavigateMenus navigateMenu)
+    {
+        switch (this.navigateMenu)
+        {
+            case NavigateMenus.MainSide:
+                this.navigateMenu = NavigateMenus.Coordinator;
+                break;
+            case NavigateMenus.Coordinator:
+                this.navigateMenu = NavigateMenus.Volenteer;
+                break;
+            case NavigateMenus.Volenteer:
+                this.navigateMenu = NavigateMenus.MainSide;
+                break;
+        }
+        Console.WriteLine("Nav enum: " + this.navigateMenu);
+        StateHasChanged();
+    }
 }

@@ -17,10 +17,12 @@ namespace GucciFestival.Shared.Models
         public DateTime End_Date { get; set; }
 
         public string Description { get; set; }
-        public int Competence_id { get; set; }
+        public int Competence_Id { get; set; }
 
 
-        public int Shift_id { get; set; } 
+        public int Shift_Id { get; set; }
+
+        public int Shift_Taken_Id { get; set; }
         //  private VolunteerService voolunteerService;
         
 
