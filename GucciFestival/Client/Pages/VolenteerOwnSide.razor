@@ -1,22 +1,22 @@
 ﻿
-@page "/userownSide"
+@page "/volenteerOwnSide"
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
 @inject NavigationManager NavManager
-@inject Blazored.LocalStorage.ILocalStorageService localStore
-
-<h3>UserOwnSide</h3>
+@using GucciFestival.Shared.VolenteerPages;
+<h3>Frivlliges Navn: </h3>
 <button @onclick=NavigateToSideProfil>Profil</button>
-<button @onclick="(() => SetShiftTarget(null,Sides.AvailableShifts,false))">Vagter ledige</button>
-<button @onclick="(() => SetShiftTarget(null,Sides.OwnShifts,false))">Egne vagter</button>
+<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable,false))">Vagter ledige</button>
+<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsOwn,false))">Egne vagter</button>
+<button @onclick=NewNavMenu>Nav menu test</button>
 @if(shifts.Count == 0){
 
 }
 else
 {
-    @switch (side)
+    @switch (volenteerPages)
     {
-        case Sides.AvailableShifts:
+        case VolenteerPages.ShiftsAvailable:
                 <table class="table">
                     <thead>
                         <tr>
@@ -32,13 +32,13 @@ else
                             <tr>
                                 <td>@forecast.Name</td>
                                 <td>@(competences)forecast.Competence_id</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,Sides.Read,false))">Tag vagt</button>
+                                <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftRead,false))">Tag vagt</button>
                             </tr>
                         }
                     </tbody>
                 </table>
             break;
-        case Sides.OwnShifts:
+        case VolenteerPages.ShiftsOwn:
                  <table class="table">
                     <thead>
                         <tr>
@@ -54,13 +54,13 @@ else
                             <tr>
                                 <td>@forecast.Name</td>
                                 <td>@(competences)forecast.Competence_id</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,Sides.Read,true))">Se din vagt</button>
+                                <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftRead,true))">Se din vagt</button>
                             </tr>
                         }
                     </tbody>
                 </table>
             break;
-        case Sides.Read:
+        case VolenteerPages.ShiftRead:
             <div>
                 <h4>Shift name @shiftTarget.Name</h4>
 
@@ -89,11 +89,7 @@ else
     }
 }
 @code {
-    public enum Sides{
-        AvailableShifts,
-        OwnShifts,
-        Read
-    }
+
 
     /// <summary>
     /// True= ownshift, false= overallShift
@@ -105,7 +101,7 @@ else
     private bool shiftTakeFlag;
 
 
-    private Sides side;
+    private VolenteerPages volenteerPages;
     private bool takenFlag;
 
     /// <summary>
@@ -129,7 +125,7 @@ else
 
 
 
-
+    private static event Action<VolenteerPages> VolenteerPagesEvent;
 
 
 
@@ -143,10 +139,17 @@ else
         //Henter alle vagter der findes på pgadmin/sql databasen.
         shifts = (await ShiftService.GetAllShifts()).ToList();
         //Henter den frilliges data, der blev gemt da den frillige loggede ind.
-        volenteerTarget = await localStore.GetItemAsync<User>("volenteer");
+    
+    }
+    protected override void OnInitialized()
+    {
+        if(VolenteerPagesEvent == null){  VolenteerPagesEvent += VolenteerPagesMetod;}
     }
 
-
+    private void NewNavMenu()
+    {
+        NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.Coordinator);
+    }
 
     private void NavigateToSideProfil()
     {
@@ -165,15 +168,31 @@ else
                     item.Shift_Taken_Id = volenteerTarget.User_id;
                 }
             }
-            SetShiftTarget(null, Sides.AvailableShifts, false);
+            SetShiftTarget(null,VolenteerPages.ShiftsOwn, false);
+        }
+    }
+    public static void ButtonVolenteerPage(VolenteerPages page)
+    {
+
+        VolenteerPagesEvent?.Invoke(page);
+    }
+    private void VolenteerPagesMetod(VolenteerPages page)
+    {
+        Console.WriteLine("VolenteerPagesMetod from navmenu");
+        switch (volenteerPages)
+        {
+            case VolenteerPages.ShiftsAvailable:
+                break;
         }
     }
 
 
-    private void SetShiftTarget(Shift shift,Sides side,bool ownShiftFlag)
+
+
+    private void SetShiftTarget(Shift shift,VolenteerPages side,bool ownShiftFlag)
     {
         shiftTarget = shift;
-        this.side = side;
+        this.volenteerPages = side;
         this.ownShiftFlag = ownShiftFlag;
         Console.WriteLine("vagt info");
 
