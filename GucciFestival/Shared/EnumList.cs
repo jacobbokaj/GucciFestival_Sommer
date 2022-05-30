@@ -7,6 +7,21 @@ using System.Threading.Tasks;
 namespace GucciFestival.Shared
 {
 
+    namespace Comepetence
+    {
+        public enum Competences
+        {
+            Førstehjælpskursus,
+            Elektriker,
+            Tømrer,
+            Kørekort,
+            Rengøring,
+            KøkkenErfaring,
+            ServiceErfaring
+        }
+    }
+
+
     namespace NavigateMenus
     {
         public enum NavigateMenus

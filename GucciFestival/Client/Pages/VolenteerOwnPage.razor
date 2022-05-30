@@ -1,4 +1,5 @@
 ﻿@page "/volenteerOwnPage"
+@using GucciFestival.Shared.Comepetence;
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
 @inject NavigationManager NavManager
@@ -138,7 +139,7 @@ else
         //Henter alle vagter der findes på pgadmin/sql databasen.
         shifts = (await ShiftService.GetAllShifts()).ToList();
         //Henter den frilliges data, der blev gemt da den frillige loggede ind.
-    
+
     }
     protected override void OnInitialized()
     {
@@ -178,11 +179,7 @@ else
     private void VolenteerPagesMetod(VolenteerPages page)
     {
         Console.WriteLine("VolenteerPagesMetod from navmenu");
-        switch (volenteerPages)
-        {
-            case VolenteerPages.ShiftsAvailable:
-                break;
-        }
+        volenteerPages = page;
     }
 
 
