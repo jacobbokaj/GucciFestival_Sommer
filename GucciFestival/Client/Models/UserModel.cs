@@ -1,6 +1,6 @@
 ﻿using GucciFestival.Shared.Models;
 using System.ComponentModel.DataAnnotations;
-using GucciFestival.Shared.Comepetence;
+using GucciFestival.Shared.Competences;
 
 namespace GucciFestival.Client.Models
 {

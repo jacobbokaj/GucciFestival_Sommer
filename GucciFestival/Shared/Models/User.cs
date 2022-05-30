@@ -14,7 +14,7 @@ namespace GucciFestival.Shared.Models
         public int? Phone { get; private set; }
 
         public string? Password;
-        public int? Competence_id;
+        //public int? Competence_id;
         public int User_id;
         public int? Type_id;
         public string? Type;
@@ -39,7 +39,7 @@ namespace GucciFestival.Shared.Models
             Email = email;
             Phone = phone;
             Password = password;
-            Competence_id = competence_id;
+         //   Competence_id = competence_id;
             User_id = user_id;
             Type_id = type_id;
             Type = type;

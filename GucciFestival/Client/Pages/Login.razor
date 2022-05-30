@@ -71,7 +71,7 @@
 
     @*<button @onsubmit=@(async () => await UserAdd())>Add user</button>*@
 @code {
-
+    public static User UserToLogin { get; private set; }
 
 
     private List<User> users = new List<User>();

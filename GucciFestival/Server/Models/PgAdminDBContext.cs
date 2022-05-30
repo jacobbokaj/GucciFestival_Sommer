@@ -6,7 +6,7 @@ namespace GucciFestival.Server.Models
 {
     public class PgAdminDBContext
     {
-        private string constring = "UserID=Anders95;Password=Hejhej1234;Host=guccifestival.postgres.database.azure.com;Port=5432;Database=gucci_festival_projekt";
+        private string constring = "UserID=Anders95;Password=Hejhej1234;Host=guccifestival.postgres.database.azure.com;Port=5432;Database=gucci_festival";
         public List<User> Users { get; private set; } = new List<User>();
         public List<Shift> Shifts { get; private set; } = new List<Shift>();
         public List<Area> Areas { get; private set; } = new List<Area>();
@@ -19,6 +19,10 @@ namespace GucciFestival.Server.Models
             using (var connection = new NpgsqlConnection(constring))
             {
                 Users = connection.Query<User>(sql).ToList();
+                foreach (var item in Users)
+                {
+                    Console.WriteLine("User: " + item.Name);
+                }
             }
         }
         public void GetAllShifts(string sql){

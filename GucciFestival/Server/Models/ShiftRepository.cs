@@ -8,7 +8,7 @@ namespace GucciFestival.Server.Models
         PgAdminDBContext db = new  PgAdminDBContext();
         public List<Shift> GetAllShifts()
         {
-            //db.GetAllShifts("SELECT name, start_time, end_time, description, competence_id, shift_id FROM shift");
+            db.GetAllShifts("SELECT name, start_time, end_time, description, competence_id, shift_id FROM shift");
             List<Shift> shifts = new List<Shift>();
             shifts.Add(new Shift());
             shifts.Add(new Shift());

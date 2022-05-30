@@ -1,6 +1,7 @@
 ﻿@using GucciFestival.Client.Pages
 @using GucciFestival.Shared.NavigateMenus;
 @using GucciFestival.Shared.VolenteerPages;
+@using GucciFestival.Shared.CoordinatorPages;
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -22,45 +23,72 @@
                         <span class="oi oi-home" aria-hidden="true"></span> Home
                     </NavLink>
                 </div>
-  
+
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="fetchdata">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
                     </NavLink>
-                           <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="login">
-                        <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
-                    </NavLink>
-                </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="login">
+                            <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
+                        </NavLink>
+                    </div>
                 </div>
             </nav>
         </div>
         break;
     case NavigateMenus.Coordinator:
-        break;
-    case NavigateMenus.Volenteer:
-           <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
             <nav class="flex-column">
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Home
-                    </NavLink>
-                </div>
-  
-                <div class="nav-item px-3">
-                    <button @onclick= "(() => VolenteerPage(VolenteerPages.ShiftsOwn))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Sol sovs
+                    <NavLink class="nav-link" href="profil">
+                            <span class="oi oi-home" aria-hidden="true"></span> Profil
+                        </NavLink>
+                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftCreate))">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Lav vagt
                     </button>
-                  
-                           <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="login">
-                        <span class="oi oi-home" aria-hidden="true"></span> Yugurt
-                    </NavLink>
-                
-                </div>
+
+                    <div class="nav-item px-3">
+                        <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftsAvailable))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Ledige vagter
+                        </button>
+                    </div>
+                    <div class="nav-item px-3">
+                        <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftsTaken))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Vagter taget
+                        </button>
+                    </div>
+                     <div class="nav-item px-3">
+                        <button @onclick="(() => CoordinatorPage(CoordinatorPages.Volenteers))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Frivillige
+                        </button>
+                    </div>
                 </div>
             </nav>
-        </div> 
+        </div>
+
+
+
+        break;
+    case NavigateMenus.Volenteer:
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="profil">
+                            <span class="oi oi-home" aria-hidden="true"></span> Profil
+                        </NavLink>
+                    <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsOwn,1))">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Min vagtplan
+                    </button>
+
+                    <div class="nav-item px-3">
+                        <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsAvailable,1))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Ledige vagter
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
 
         break;
 }
@@ -74,13 +102,15 @@
     private NavigateMenus navigateMenu;
 
 
-    private static event Action<NavigateMenus> navMenuChangeEvent;
+    private static Action<NavigateMenus> navMenuChangeEvent;
+
+    private static int volenteerIndex;
 
 
     protected override void OnInitialized()
     {
         Console.WriteLine("Navmenu Load");
-        if(navMenuChangeEvent == null){ navMenuChangeEvent += NewNavMenu;}
+        navMenuChangeEvent = NewNavMenu;
     }
 
     private void ToggleNavMenu()
@@ -94,11 +124,15 @@
 
     }
 
-    private static void VolenteerPage(VolenteerPages volenteerPage)
+    private static void VolenteerPage(VolenteerPages volenteerPage, int index)
     {
-        VolenteerOwnPage.ButtonVolenteerPage(volenteerPage);
+        volenteerIndex = index;
+        VolenteerOwnPage.ButtonVolenteerPage(volenteerPage, index);
     }
-
+    private static void CoordinatorPage(CoordinatorPages coordinatorPage)
+    {
+        CoordinatorOwnPage.ButtonPage(coordinatorPage);
+    }
     private void NewNavMenu(NavigateMenus navigateMenu)
     {
         switch (this.navigateMenu)

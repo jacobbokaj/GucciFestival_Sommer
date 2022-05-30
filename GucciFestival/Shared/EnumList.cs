@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GucciFestival.Shared
 {
 
-    namespace Comepetence
+    namespace Competences
     {
         public enum Competences
         {
@@ -37,13 +37,14 @@ namespace GucciFestival.Shared
         public enum VolenteerPages
         {
             ShiftsAvailable,
+            ShiftAvailableRead,
             ShiftsOwn,
-            ShiftRead
+            ShiftOwnRead,
         }
     }
     namespace CoordinatorPages
     {
-        public enum CoordinatorOwnPages
+        public enum CoordinatorPages
         {
             ShiftsAvailable,
             ShiftsTaken,
@@ -51,6 +52,15 @@ namespace GucciFestival.Shared
             Volenteers,
             VolenteersRead,
             ShiftRead,
+        }
+    }
+    namespace TaskStatus
+    {
+        public enum TaskStatus
+        {
+            Planning,
+            Execution,
+            Perform
         }
     }
 }

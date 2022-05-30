@@ -1,14 +1,13 @@
 ﻿@page "/volenteerOwnPage"
-@using GucciFestival.Shared.Comepetence;
+@using GucciFestival.Shared.Competences;
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
 @inject NavigationManager NavManager
 @using GucciFestival.Shared.VolenteerPages;
 <h3>Frivlliges Navn: </h3>
-<button @onclick=NavigateToSideProfil>Profil</button>
-<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable,false))">Vagter ledige</button>
-<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsOwn,false))">Egne vagter</button>
 <button @onclick=NewNavMenu>Nav menu test</button>
+<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsOwn))">Egen vagter</button>
+<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable))">Vagter ledige</button>
 @if(shifts.Count == 0){
 
 }
@@ -20,47 +19,29 @@ else
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Temp. (C)</th>
-                            <th>Temp. (F)</th>
-                            <th>Summary</th>
+                            <th>Navn</th>
+                            <th>Kompetence</th>
+                            <th>Start dato</th>
+                            <th>Slut dato</th>
+                            <th>Tag vagt</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var forecast in shifts)
                         {
                             <tr>
-                                <td>@forecast.Name</td>
-                                <td>@(competences)forecast.Competence_id</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftRead,false))">Tag vagt</button>
+                                <td>@forecast.Name  </td>
+                                <td>@((Competences)forecast.Competence_Id)</td>
+                                <td>@forecast.Start_Date</td>
+                                <td>@forecast.End_Date</td>
+                                <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftAvailableRead))">Tag vagt</button>
                             </tr>
                         }
                     </tbody>
                 </table>
             break;
-        case VolenteerPages.ShiftsOwn:
-                 <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Temp. (C)</th>
-                            <th>Temp. (F)</th>
-                            <th>Summary</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var forecast in shifts)
-                        {
-                            <tr>
-                                <td>@forecast.Name</td>
-                                <td>@(competences)forecast.Competence_id</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftRead,true))">Se din vagt</button>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            break;
-        case VolenteerPages.ShiftRead:
+        case VolenteerPages.ShiftAvailableRead:
+
             <div>
                 <h4>Shift name @shiftTarget.Name</h4>
 
@@ -72,38 +53,46 @@ else
 
                 <h3>Description</h3>
                 <h3>@shiftTarget.Description</h3>
-
-
-                @if (ownShiftFlag == false)
-                {
-                 <h3>Sikker på at tage vagten?</h3>      
-                 <input type="checkbox" @bind=shiftTakeFlag/>
-                 <button @onclick=TakeShift>Tag vagten</button>
-                }
-
-
-
+                
+                <h3>Sikker på at tage vagten?</h3>      
+                <input type="checkbox" @bind=shiftTakeCheckBoksFlag/>
+                <button @onclick=TakeShift>Tag vagten</button>
             </div>
+
             break;
 
+        case VolenteerPages.ShiftsOwn:
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Navn</th>
+                            <th>Kompetence</th>
+                            <th>Start dato</th>
+                            <th>Slut dato</th>
+                        </tr>
+                         @foreach (var forecast in shifts)
+                        {
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@((Competences)forecast.Competence_Id)</td>
+                                <td>@forecast.Start_Date</td>
+                                <td>@forecast.End_Date</td>
+                            </tr>
+                        }
+                    </thead>
+                </table>
+            break;
     }
 }
 @code {
 
 
     /// <summary>
-    /// True= ownshift, false= overallShift
-    /// </summary>
-    private bool ownShiftFlag;
-    /// <summary>
     /// Brugt til checkboks, checke om "user"/frivllig er sikker på at tage vagten
     /// </summary>
-    private bool shiftTakeFlag;
-
+    private bool shiftTakeCheckBoksFlag;
 
     private VolenteerPages volenteerPages;
-    private bool takenFlag;
-
     /// <summary>
     /// Den frillige brugers her og får dataen ved hjælp af "blazored.localstorage"
     /// Den frillige localstorage ved sat ind, da den frillige loggede ind.
@@ -125,8 +114,7 @@ else
 
 
 
-    private static event Action<VolenteerPages> VolenteerPagesEvent;
-
+    private static Action<VolenteerPages,int> volenteerPagesEvent;
 
 
 
@@ -141,9 +129,11 @@ else
         //Henter den frilliges data, der blev gemt da den frillige loggede ind.
 
     }
+
+
     protected override void OnInitialized()
     {
-        if(VolenteerPagesEvent == null){  VolenteerPagesEvent += VolenteerPagesMetod;}
+        volenteerPagesEvent = PageChange;
     }
 
     private void NewNavMenu()
@@ -151,15 +141,10 @@ else
         NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.Coordinator);
     }
 
-    private void NavigateToSideProfil()
-    {
-        NavManager.NavigateTo("/profil");
-    }
-
 
     private void TakeShift()
     {
-        if (shiftTakeFlag)
+        if (shiftTakeCheckBoksFlag)
         {
             foreach (var item in shifts)
             {
@@ -168,29 +153,36 @@ else
                     item.Shift_Taken_Id = volenteerTarget.User_id;
                 }
             }
-            SetShiftTarget(null,VolenteerPages.ShiftsOwn, false);
+            SetShiftTarget(null,VolenteerPages.ShiftsOwn);
         }
     }
-    public static void ButtonVolenteerPage(VolenteerPages page)
-    {
 
-        VolenteerPagesEvent?.Invoke(page);
-    }
-    private void VolenteerPagesMetod(VolenteerPages page)
-    {
-        Console.WriteLine("VolenteerPagesMetod from navmenu");
-        volenteerPages = page;
-    }
-
-
-
-
-    private void SetShiftTarget(Shift shift,VolenteerPages side,bool ownShiftFlag)
+    private void SetShiftTarget(Shift shift,VolenteerPages page)
     {
         shiftTarget = shift;
-        this.volenteerPages = side;
-        this.ownShiftFlag = ownShiftFlag;
+        this.volenteerPages = page;
         Console.WriteLine("vagt info");
+        Console.WriteLine("VolenteerPages: " + volenteerPages);
 
+    }
+
+    private void NavigateToSideProfil()
+    {
+        NavManager.NavigateTo("/profil");
+    }
+
+    public static void ButtonVolenteerPage(VolenteerPages page, int index)
+    {
+
+        volenteerPagesEvent?.Invoke(page,index);
+    }
+    private void PageChange(VolenteerPages page,int index)
+    {
+        if (NavManager.Uri != (NavManager.BaseUri.ToString() + "volenteerOwnPage"))
+        {
+            NavManager.NavigateTo("/volenteerOwnPage");
+        }
+        SetShiftTarget(null, page);     
+        StateHasChanged();
     }
 }

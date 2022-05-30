@@ -9,7 +9,7 @@ namespace GucciFestival.Server.Models
 
         public List<User> GetAllUsers()
         {
-          //  db.Get("SELECT name,birthday, email, phone, password, competence_id, user_id, type_id, type  FROM \"User\";");
+            db.GetAllUsers("SELECT name,birthday, email, phone, password, user_id, type_id, type  FROM \"User\";");
             List<User> users = new List<User>();
             users.Add(new User());
             users[0].Name = "hihi xd";
@@ -18,7 +18,7 @@ namespace GucciFestival.Server.Models
         public void AddUser(User user)
         {
             Console.WriteLine("Add user in server user");
-            string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.Competence_id}','{user.User_id}','{user.Type_id}','{user.Type}')";
+            string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.User_id}','{user.Type_id}','{user.Type}')";
             db.CUD(sql);
         }
     }

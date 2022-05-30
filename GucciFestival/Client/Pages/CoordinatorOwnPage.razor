@@ -1,5 +1,5 @@
 ﻿@page "/coordinatorOwnPage"
-@using GucciFestival.Shared.Comepetence;
+@using GucciFestival.Shared.Competences;
 @using GucciFestival.Shared.CoordinatorPages;
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
@@ -8,10 +8,10 @@
 
 
 <h3>CoordinatorOwnPage</h3>
-<button @onclick=NavigateToSideProfil>Profil</button>
-<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsAvailable,false))">Vagter Ledige</button>
-<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsTaken,false))">Vagter taget</button>
-<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.Volenteers,false))">Frivillige</button>
+@*<button @onclick=NavigateToSideProfil>Profil</button>
+<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsAvailable))">Vagter Ledige</button>
+<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsTaken))">Vagter taget</button>
+<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.Volenteers))">Frivillige</button>*@
 <button @onclick="(() => NewNavMenu(NavigateMenus.Coordinator))">Nav menu test</button>
 @if (shifts.Count == 0)
 {
@@ -19,16 +19,17 @@
 }
 else
 {
-    @switch (pages)
+    @switch (page)
     {
-        case CoordinatorOwnPages.ShiftsAvailable:
+        case CoordinatorPages.ShiftsAvailable:
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
+                        <th>Vagt navn</th>
+                        <th>Kompetence</th>
+                        <th>Start dato</th>
+                        <th>Slut dato</th>
+                        <th>Se vagt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,21 +37,23 @@ else
                     {
                         <tr>
                             <td>@forecast.Name</td>
-                            <td>@(competences)forecast.Competence_id</td>
-                            <button @onclick="(() => SetShiftTarget(forecast,CoordinatorOwnPages.ShiftRead,false))">Se vagt</button>
+                            <td>@((Competences)forecast.Competence_Id))</td>
+                            <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                         </tr>
                     }
                 </tbody>
             </table>
             break;
-        case CoordinatorOwnPages.ShiftsTaken:
+        case CoordinatorPages.ShiftsTaken:
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Taget xDDD</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
+                        <th>Vagt navn</th>
+                        <th>Frivilliges navn</th>
+                        <th>Kompetence</th>
+                        <th>Start dato</th>
+                        <th>Slut dato</th>
+                        <th>Se vagt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,22 +61,23 @@ else
                     {
                         <tr>
                             <td>@forecast.Name</td>
-                            <td>@(competences)forecast.Competence_id</td>
-                            <button @onclick="(() => SetShiftTarget(forecast,CoordinatorOwnPages.ShiftRead,true))">Se vagt</button>
+                            <td>@((Competences)forecast.Competence_Id))</td>
+                            <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                         </tr>
                     }
                 </tbody>
             </table>
             break;
-        case CoordinatorOwnPages.Volenteers:
+        case CoordinatorPages.Volenteers:
 
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
+                        <th>FrivilligeNavn</th>
+                        <th>Kompetence</th>
+                        <th>Fødselsdag</th>
+                        <th>Tlf</th>
+                        <th>Email</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,17 +85,16 @@ else
                     {
                         <tr>
                             <td>@forecast.Name</td>
-                            <td>@(competences)forecast.Competence_id</td>
-                            <button @onclick="(() => CheckVolenteer(forecast))">Se den frivillige</button>
+                           @* <td>@((Competences)forecast.Competence_id)</td>*@
                         </tr>
                     }
                 </tbody>
             </table>
             break;
-        case CoordinatorOwnPages.VolenteersRead:
+        case CoordinatorPages.VolenteersRead:
             <div>
 
-                <h4>Frivillige  @volenteer.Name</h4>
+                <h4>Frivilliges info  @volenteer.Name</h4>
 
                 <h3>Start dato</h3>
                 <h3>@shiftTarget.Start_Date</h3>
@@ -104,11 +107,8 @@ else
 
 
             </div>
-
-
-
             break;
-        case CoordinatorOwnPages.ShiftRead:
+        case CoordinatorPages.ShiftRead:
             <div>
                 <h4>Shift name @shiftTarget.Name</h4>
 
@@ -120,32 +120,49 @@ else
 
                 <h3>Description</h3>
                 <h3>@shiftTarget.Description</h3>
-
-
-                
-
-
-
             </div>
+
+
+            <EditForm Model=@shiftModel class="row p-3">
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+                <div class="col-md-12 mb-3">
+                <label for="Name">Name</label>
+                <InputText id="Name" @bind-Value="shiftModel.Name" class="form-control"/>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="StartData">Start dato</label>
+                    <InputDate @bind-Value=shiftTarget.Start_Date/>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="EndDate">Slut dato</label>
+                    <InputDate @bind-Value=shiftTarget.End_Date/>
+                </div>
+                    <InputSelect id="Competence" @bind-Value="competences">
+                        @foreach (var item in competenceArray)
+                       {
+                           <option>@item</option>
+                       }
+                    </InputSelect>
+                <div>
+
+                </div>
+
+            </EditForm>
+
+            
             break;
 
     }
 }
 @code {
-    
-
-    /// <summary>
-    /// True= ownshift, false= overallShift
-    /// </summary>
-    private bool ownShiftFlag;
-    /// <summary>
-    /// Brugt til checkboks, checke om "user"/frivllig er sikker på at tage vagten
-    /// </summary>
-    private bool shiftTakeFlag;
 
 
-    private CoordinatorOwnPages pages;
-    private bool takenFlag;
+
+
+    private CoordinatorPages page;
 
     /// <summary>
     /// Den frillige brugers her og får dataen ved hjælp af "blazored.localstorage"
@@ -156,6 +173,8 @@ else
     /// What shift is taken from the list and will be checked out.
     /// </summary>
     private Shift shiftTarget = new Shift();
+
+    private Shift shiftModel = new Shift();
     private List<Shift> shifts = new List<Shift>();
 
     private User volenteer = new User();
@@ -164,7 +183,9 @@ else
 
 
     private Competences competences;
-
+    private string[] competenceArray = new string[7] { Competences.Førstehjælpskursus.ToString(),Competences.Elektriker.ToString(),
+                                                       Competences.Tømrer.ToString(),Competences.Kørekort.ToString(),Competences.Rengøring.ToString(),
+                                                        Competences.KøkkenErfaring.ToString(),Competences.ServiceErfaring.ToString()};
 
 
 
@@ -174,62 +195,72 @@ else
 
 
 
-
-
-
+    private static Action<CoordinatorPages> pagesEvent;
 
 
 
 
     [Inject]
+    public IUserService VolenteerService { get; set; }
+
+    [Inject]
     public IShiftService ShiftService { get; set; }
     protected override async Task OnInitializedAsync()
     {
+
         ////Henter alle vagter der findes på pgadmin/sql databasen.
         shifts = (await ShiftService.GetAllShifts()).ToList();
         ////Henter den frilliges data, der blev gemt da den frillige loggede ind.
         //volenteerTarget = await localStore.GetItemAsync<User>("volenteer");
+        volenteers = (await VolenteerService.GetAllUsers()).ToList();
     }
-
-
-
-    private void NavigateToSideProfil()
+    protected override void OnInitialized()
     {
-        NavManager.NavigateTo("/profil");
-    }
-     private void NewNavMenu(NavigateMenus navigateMenu)
-    {
-        
-        NavMenu.ChangeSideFlag(navigateMenu);
+        pagesEvent = PageChange;
     }
 
-    private void TakeShift()
-    {
-        if (shiftTakeFlag)
-        {
-            foreach (var item in shifts)
-            {
-                if (item.Shift_Id == shiftTarget.Shift_Id)
-                {
-                    item.Shift_Taken_Id = volenteerTarget.User_id;
-                }
-            }
-            SetShiftTarget(null, CoordinatorOwnPages.ShiftsAvailable, false);
-        }
-    }
 
+
+
+    private void SetShiftTarget(Shift shift, CoordinatorPages page)
+    {
+        shiftTarget = shift;
+        this.page = page;
+
+        Console.WriteLine("vagt info");
+
+    }
     private void CheckVolenteer(User volenteer)
     {
 
     }
 
 
-    private void SetShiftTarget(Shift shift, CoordinatorOwnPages side, bool ownShiftFlag)
+    private void NewNavMenu(NavigateMenus navigateMenu)
     {
-        shiftTarget = shift;
-        this.pages = side;
-        this.ownShiftFlag = ownShiftFlag;
-        Console.WriteLine("vagt info");
 
+        NavMenu.ChangeSideFlag(navigateMenu);
+        StateHasChanged();
+    }
+    private void NavigateToSideProfil()
+    {
+        NavManager.NavigateTo("/profil");
+    }
+
+    public static void ButtonPage(CoordinatorPages pages)
+    {
+        pagesEvent?.Invoke(pages);
+    }
+
+
+    public void PageChange(CoordinatorPages pages)
+    {
+        if (NavManager.Uri != (NavManager.BaseUri.ToString() + "coordinatorOwnPage"))
+        {
+            NavManager.NavigateTo("/coordinatorOwnPage");
+        }
+        Console.WriteLine("New coordinator page");
+        page = pages;
+        StateHasChanged();
     }
 }
