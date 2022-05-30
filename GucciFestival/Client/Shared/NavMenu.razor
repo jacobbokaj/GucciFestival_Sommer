@@ -37,6 +37,8 @@
         </div>
         break;
     case NavigateMenus.Coordinator:
+        break;
+    case NavigateMenus.Volenteer:
            <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
             <nav class="flex-column">
                 <div class="nav-item px-3">
@@ -59,8 +61,6 @@
                 </div>
             </nav>
         </div> 
-        break;
-    case NavigateMenus.Volenteer:
 
         break;
 }
@@ -96,7 +96,7 @@
 
     private static void VolenteerPage(VolenteerPages volenteerPage)
     {
-        VolenteerOwnSide.ButtonVolenteerPage(volenteerPage);
+        VolenteerOwnPage.ButtonVolenteerPage(volenteerPage);
     }
 
     private void NewNavMenu(NavigateMenus navigateMenu)

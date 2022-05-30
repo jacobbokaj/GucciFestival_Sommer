@@ -26,4 +26,16 @@ namespace GucciFestival.Shared
             ShiftRead
         }
     }
+    namespace CoordinatorPages
+    {
+        public enum CoordinatorOwnPages
+        {
+            ShiftsAvailable,
+            ShiftsTaken,
+            ShiftCreate,
+            Volenteers,
+            VolenteersRead,
+            ShiftRead,
+        }
+    }
 }
