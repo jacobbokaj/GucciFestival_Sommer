@@ -134,11 +134,12 @@ else
     protected override void OnInitialized()
     {
         volenteerPagesEvent = PageChange;
+        NewNavMenu();
     }
 
     private void NewNavMenu()
     {
-        NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.Coordinator);
+        NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.Volenteer);
     }
 
 

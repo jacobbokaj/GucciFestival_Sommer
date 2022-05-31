@@ -7,9 +7,10 @@ namespace GucciFestival.Client.Models
     //Hej
     public class UserModel
     {
-        [Required]
+       
         public string Name { get; set; }
         public DateTime Birthday { get; set; } = DateTime.Now;
+
 
         public string Email { get; set; }
 
