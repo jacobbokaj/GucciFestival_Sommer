@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GucciFestival.Shared.Competences;
 
 namespace GucciFestival.Shared.Models
 {
@@ -19,6 +20,7 @@ namespace GucciFestival.Shared.Models
         public int? Type_id;
         public string? Type;
 
+        public List<Competences.Competences> competences;
         /// <summary>
         /// false for volunteer, true for Coordinator.
         /// </summary>

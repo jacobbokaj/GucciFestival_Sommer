@@ -18,8 +18,9 @@ namespace GucciFestival.Server.Models
         public void AddUser(User user)
         {
             Console.WriteLine("Add user in server user");
-            string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.User_id}','{user.Type_id}','{user.Type}')";
-            db.CUD(sql);
+            db.CUD("call create_user5('Kennth','05-09-1991', 'Kennethgmai.com','12345678','password', '{1,2}')");
+           // string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.User_id}','{user.Type_id}','{user.Type}')";
+           // db.CUD(sql);
         }
     }
 }

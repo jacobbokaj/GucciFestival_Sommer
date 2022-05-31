@@ -12,7 +12,9 @@
 <button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsAvailable))">Vagter Ledige</button>
 <button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsTaken))">Vagter taget</button>
 <button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.Volenteers))">Frivillige</button>*@
+
 <button @onclick="(() => NewNavMenu(NavigateMenus.Coordinator))">Nav menu test</button>
+<button @onclick=CreateUser>Add user</button>
 @if (shifts.Count == 0)
 {
 
@@ -70,6 +72,16 @@ else
             break;
         case CoordinatorPages.Volenteers:
 
+            <EditForm Model=@volenteer>
+                 
+                    <InputSelect id="Competence" @bind-Value="competences">
+                        @foreach (var item in competenceArray)
+                       {
+                           <option>@item</option>
+                       }
+                    </InputSelect>
+                
+            </EditForm>
             <table class="table">
                 <thead>
                     <tr>
@@ -90,6 +102,8 @@ else
                     }
                 </tbody>
             </table>
+
+
             break;
         case CoordinatorPages.VolenteersRead:
             <div>
@@ -219,6 +233,10 @@ else
         pagesEvent = PageChange;
     }
 
+    private async void CreateUser()
+    {
+        await VolenteerService.AddUser(volenteer);
+    }
 
 
 

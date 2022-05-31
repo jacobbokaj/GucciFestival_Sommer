@@ -1,26 +1,22 @@
 ﻿@using GucciFestival.Client.Models
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
+@using GucciFestival.Shared.StartPage;
 @using Nito.AsyncEx;
 @inject NavigationManager NavManager
+@using GucciFestival.Shared.NavigateMenus;
 @page "/login"
 @using GucciFestival.Shared;
 
-
-
-@if(sideOpret == null)
+@switch (startPage)
 {
-    <h3> Login in</h3>
-        <button @onclick="(()=>SetSide(true))" class="btn-outline-primary">log in</button>
-        <button @onclick="(()=>SetSide(false))" class="btn-outline-primary">opret bruger</button>
-
-
-    
-
-
-
-}else if (sideOpret == true)
-{
+    case StartPage.MainPage:
+        <h3> Login in</h3>
+            <button @onclick="(()=>SetPage(StartPage.Login))" class="btn-outline-primary">log in</button>
+        <button @onclick="(()=>SetPage(StartPage.CreateUser))" class="btn-outline-primary">opret bruger</button>
+        
+        break;
+    case StartPage.Login:
     <h3>Log in </h3>
     <EditForm EditContext=@editContextCreateUser 
      OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
@@ -42,12 +38,9 @@
 
         <button type="submit" class="btn-outline-primary">Login</button>
 
-        <button type="submit" class="btn-outline-primary">Change navmenu</button>
-    </EditForm>
-
-}else if(sideOpret == false)
-{
-    
+        </EditForm>
+        break;
+    case StartPage.CreateUser:
         <h4>@userLoginMessage</h4>
         <EditForm EditContext=@editContextCreateUser 
          OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
@@ -82,21 +75,15 @@
         <button type="submit" class="btn-outline-primary">Change navmenu</button>
 
         </EditForm>
-    //opret side 
-
-
-
-
-
-
-
-
+        break;
 }
-
-
 
     @*<button @onsubmit=@(async () => await UserAdd())>Add user</button>*@
 @code {
+
+    public StartPage startPage;
+
+
     public static User UserToLogin { get; private set; }
 
 
@@ -122,7 +109,7 @@
 
     protected override void OnInitialized()
     {
-        sideOpret = null;
+
         editContextCreateUser = new EditContext(userModel);
         userLoginMessage = string.Empty;
 
@@ -153,9 +140,10 @@
 
 
 
-    public void SetSide(bool? flag)
+    public void SetPage(StartPage startPage)
     {
-        sideOpret = flag;
+        NavMenu.ChangeSideFlag(NavigateMenus.MainSide);
+        this.startPage = startPage;
     }
 
 
