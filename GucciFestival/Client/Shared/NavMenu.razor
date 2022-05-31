@@ -135,18 +135,19 @@
     }
     private void NewNavMenu(NavigateMenus navigateMenu)
     {
-        switch (this.navigateMenu)
-        {
-            case NavigateMenus.MainSide:
-                this.navigateMenu = NavigateMenus.Coordinator;
-                break;
-            case NavigateMenus.Coordinator:
-                this.navigateMenu = NavigateMenus.Volenteer;
-                break;
-            case NavigateMenus.Volenteer:
-                this.navigateMenu = NavigateMenus.MainSide;
-                break;
-        }
+        this.navigateMenu = navigateMenu;
+        //switch (this.navigateMenu)
+        //{
+        //    case NavigateMenus.MainSide:
+        //        this.navigateMenu = NavigateMenus.Coordinator;
+        //        break;
+        //    case NavigateMenus.Coordinator:
+        //        this.navigateMenu = NavigateMenus.Volenteer;
+        //        break;
+        //    case NavigateMenus.Volenteer:
+        //        this.navigateMenu = NavigateMenus.MainSide;
+        //        break;
+        //}
         Console.WriteLine("Nav enum: " + this.navigateMenu);
         StateHasChanged();
     }

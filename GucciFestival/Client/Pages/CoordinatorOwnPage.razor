@@ -123,20 +123,6 @@ else
             </div>
             break;
         case CoordinatorPages.ShiftRead:
-            <div>
-                <h4>Shift name @shiftTarget.Name</h4>
-
-                <h3>Start dato></h3>
-                <h3>@shiftTarget.Start_Date</h3>
-
-                <h3>Slut dato</h3>
-                <h3>@shiftTarget.End_Date</h3>
-
-                <h3>Description</h3>
-                <h3>@shiftTarget.Description</h3>
-            </div>
-
-
             <EditForm Model=@shiftModel class="row p-3">
                 <DataAnnotationsValidator/>
                 <ValidationSummary/>
@@ -162,6 +148,15 @@ else
                     </InputSelect>
                 <div>
 
+
+                        @if (ShiftTakenCheck())
+                        {
+                            <div>
+                            <label>Frivilliges navn: @volenteer.Name</label>
+                            </div>
+                        }
+
+                
                 </div>
 
             </EditForm>
@@ -231,6 +226,7 @@ else
     protected override void OnInitialized()
     {
         pagesEvent = PageChange;
+
     }
 
     private async void CreateUser()
@@ -248,6 +244,39 @@ else
         Console.WriteLine("vagt info");
 
     }
+
+    /// <summary>
+    /// flag = false: få alle vagter der ikke er taget.
+    /// flag = true: få alle vagter der er taget.
+    /// </summary>
+    /// <param name="flag"></param>
+    private List<User> GetAllSpecificShift(bool flag)
+    {
+        foreach (var item in volenteers)
+        {
+            if(item.User_id == 2){}
+    }
+        return null;
+    }
+
+    private bool ShiftTakenCheck()
+    {
+        Console.WriteLine("ShiftTarget before -1: " + shiftTarget.Shift_Taken_Id);
+        if (shiftTarget.Shift_Taken_Id != -1)
+        {
+            foreach (var item in volenteers)
+            {
+                if(item.User_id == shiftTarget.Shift_Taken_Id)
+                {
+                    return true;
+                }
+                Console.WriteLine("Shift id: " + shiftTarget.Shift_Taken_Id + " volenteer id: " + item.User_id);
+            }
+        }
+        return false;
+    }
+
+
     private void CheckVolenteer(User volenteer)
     {
 
