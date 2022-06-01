@@ -48,7 +48,7 @@ else
                        }
                     </InputSelect>
                 <div>          
-                    <button @onsubmit=ShiftAdd>Tilføj vagt</button>
+                    <button @onclick=ShiftAdd>Tilføj vagt</button>
 
                 </div>
 
@@ -70,7 +70,7 @@ else
                     {
                         <tr>
                             <td>@forecast.Name</td>
-                            <td>@((Competences)forecast.Competence_Id))</td>
+                            <td>@((Competences)(forecast.Competence_Id -1))</td>
                             <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                         </tr>
                     }
@@ -94,7 +94,7 @@ else
                     {
                         <tr>
                             <td>@forecast.Name</td>
-                            <td>@((Competences)forecast.Competence_Id))</td>
+                            <td>@((Competences)(forecast.Competence_Id-1))</td>
                             <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                         </tr>
                     }
@@ -340,15 +340,27 @@ else
         shiftAdd.Start_Date = shiftModel.Start_Date;
         shiftAdd.End_Date = shiftModel.End_Date;
 
-          ShiftService.AddShift(shiftAdd);
+        ShiftService.AddShift(shiftAdd);
     }
     private async Task ShiftUpdate()
     {
-        await ShiftService.UpdateShift(shiftTarget);
+        Shift shift_update = new Shift();
+
+        shift_update = shiftTarget;
+        shift_update.Name = shiftModel.Name;
+        shift_update.Start_Date = shiftModel.Start_Date;
+        shift_update.End_Date = shiftModel.End_Date;
+        shift_update.Competence_Id = (int)competences + 1;
+
+
+
+        await ShiftService.UpdateShift(shift_update);
     }
-    private async Task ShiftDelete()
+    private void ShiftDelete()
     {
-        await ShiftService.DeleteShift(shiftTarget);
+
+        ShiftService.DeleteShift(shiftTarget);
+        page = CoordinatorPages.ShiftsAvailable;
     }
 
     private bool ShiftTakenCheck()

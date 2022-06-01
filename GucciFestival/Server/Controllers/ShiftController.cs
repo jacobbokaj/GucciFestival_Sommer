@@ -33,10 +33,12 @@ namespace GucciFestival.Server.Controllers
             Console.WriteLine("Update HTTPPOST");
             repository.AddShift(shift);
         }
-        [HttpDelete]
+
+        [HttpDelete("{id:int}")]
         public void DeleteShift(int id)
         {
-
+            Console.WriteLine("DELETE HTTPDELETE");
+            repository.DeleteShift(id);
         }
         [HttpPut]
         public void Update(Shift shift)

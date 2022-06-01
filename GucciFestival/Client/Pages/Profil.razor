@@ -29,7 +29,7 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 	<label for="Birthday">Birthday:</label>
 	<InputDate id="Birthday" @bind-Value="userModelV2.Birthday" class="form-control"/>
 </div>
-<Button id="button1" @onclick=UserUpdate> Opdater profil</Button> 
+<Button id="button1" @onsubmit=UserUpdate> Opdater profil</Button> 
 <Button id="button2" @onclick=UserDelete> Slet Profil</Button> 
 
 <style>

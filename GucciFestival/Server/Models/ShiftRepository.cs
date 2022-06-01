@@ -45,6 +45,9 @@ namespace GucciFestival.Server.Models
             //        return true;
             //    }
             //}
+            string sql = $"DELETE FROM shift WHERE shift_id = {id}";
+            Console.WriteLine(sql);
+            db.CUD(sql);
             return false;
         }
 
