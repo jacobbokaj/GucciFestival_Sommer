@@ -20,7 +20,7 @@ namespace GucciFestival.Shared.Models
         public int? Type_id { get; set; }
         public string? Type { get; set; }
 
-        public List<Competences.Competences> competences;
+        public List<Competences.Competences> Competences { get; set; } = new List<Competences.Competences>();
         /// <summary>
         /// false for volunteer, true for Coordinator.
         /// </summary>

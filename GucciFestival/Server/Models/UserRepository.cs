@@ -1,4 +1,5 @@
 ﻿using GucciFestival.Server.Services;
+using GucciFestival.Shared.Competences;
 using GucciFestival.Shared.Models;
 
 namespace GucciFestival.Server.Models
@@ -10,10 +11,21 @@ namespace GucciFestival.Server.Models
         public List<User> GetAllUsers()
         {
             db.GetAllUsers("SELECT name,birthday, email, phone, password, user_id, type_id, type  FROM \"User\";");
+            db.GetAllUserCompetences("SELECT \"User_user_id\", competence_competence_id FROM \"User_competence\"");
+            for     (int i = 0; i < db.Users.Count; i++)
+            {
+                for (int j = 0; j < db.UserCompetences.Count; j++)
+                    if(db.Users[i].User_id == db.UserCompetences[j].User_User_Id)
+                    {
+                       db.Users[i].Competences.Add((Competences)(db.UserCompetences[j].Competence_Competence_Id - 1));
+                   //     Console.WriteLine($"User Competence {db.Users[i].Name} Enum: {db.Users[i].Competences[0]} ");
+                    }
+                Console.WriteLine($" user competence count: {db.Users[i].Competences.Count}");
+            }
             //List<User> users = new List<User>();
             //users.Add(new User());
             //users[0].Name = "hihi xd";
-            Console.WriteLine(db.Users[0].Password);
+           // Console.WriteLine(db.Users[0].Password);
             return db.Users;
         }
         public void AddUser(User user)

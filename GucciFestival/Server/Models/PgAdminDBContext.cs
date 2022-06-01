@@ -10,6 +10,8 @@ namespace GucciFestival.Server.Models
         public List<User> Users { get; private set; } = new List<User>();
         public List<Shift> Shifts { get; private set; } = new List<Shift>();
 
+        public List<UserCompetence> UserCompetences { get; private set; } = new List<UserCompetence> ();
+
         public PgAdminDBContext()
         {
         }
@@ -19,6 +21,13 @@ namespace GucciFestival.Server.Models
             {
                 Users = connection.Query<User>(sql).ToList();
                
+            }
+        }
+        public void GetAllUserCompetences(string sql)
+        {
+            using (var connection = new NpgsqlConnection(constring))
+            {
+                UserCompetences = connection.Query<UserCompetence>(sql).ToList();
             }
         }
         public void GetAllShifts(string sql){
