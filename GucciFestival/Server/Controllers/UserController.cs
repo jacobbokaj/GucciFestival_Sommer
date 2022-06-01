@@ -23,7 +23,7 @@ namespace GucciFestival.Server.Controllers
         {
             foreach (var item in repository.GetAllUsers())
             {
-                Console.WriteLine("Data  birthday: " +item.Birthday);
+                Console.WriteLine("Data  birthday: " + item.Birthday);
             }
             return repository.GetAllUsers();
         }
@@ -32,6 +32,17 @@ namespace GucciFestival.Server.Controllers
         public void AddUser(User user)
         {
             repository.AddUser(user);
+        }
+        [HttpPut]
+        public void UpdateUser(User user)
+        {
+            Console.WriteLine("Update HTTPPUT");
+            repository.UpdateUser(user);
+        }
+        [HttpDelete("{id:int}")]
+        public void DeleteUser(int id)
+        {
+            repository.DeleteUser(id);
         }
     }
 }

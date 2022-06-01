@@ -38,5 +38,17 @@ namespace GucciFestival.Client.Models
             return (int)result.StatusCode;
         }
 
+        public async Task<int> UpdateUser(User user)
+        {
+            var result = await httpClient.PutAsJsonAsync<User>("api/userapi", user);
+            return (int)result.StatusCode;
+        }
+
+        public async Task<int> DeleteUser(User user)
+        {
+            var response = await httpClient.DeleteAsync("api/userapi/" + user.User_id);
+            var responseStatusCode = response.StatusCode;
+            return (int)responseStatusCode;
+        }
     }
 }

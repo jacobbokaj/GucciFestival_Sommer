@@ -23,5 +23,31 @@ namespace GucciFestival.Server.Models
            // string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.User_id}','{user.Type_id}','{user.Type}')";
            // db.CUD(sql);
         }
+
+        public bool UpdateUser(User user)
+        {
+
+            List<User> users = new List<User>();
+            users = GetAllUsers();
+            foreach (var item in users)
+            {
+               
+            }
+            string sql = $"UPDATE \"User\" " +
+                $"SET name= '{user.Name}', birthday = '{user.Birthday.ToString("MM-dd-yyyy")}', email = '{user.Email}', phone = {user.Phone}," +
+                $" password = '{user.Password}', User_id = {user.User_id} WHERE User_id = {user.User_id}";
+            
+            Console.WriteLine("USER UPDATE SQL: "+ sql);
+            db.CUD(sql);
+            return true;
+        }
+
+        public bool DeleteUser(int user_id)
+        {
+            string sql = $"DELETE FROM \"User\" WHERE User_id = {user_id}";
+            Console.WriteLine("DELETE USER implement needed");
+            db.CUD(sql);
+            return true;
+        }
     }
 }

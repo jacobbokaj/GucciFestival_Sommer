@@ -18,18 +18,20 @@ namespace GucciFestival.Server.Models
             //shifts[1].Competence_Id = 2;
             //shifts[1].Shift_Taken_Id = 0;
             //shifts[1].Name = "Høvler";
-            foreach (var item in db.Shifts)
-            {
-                Console.WriteLine(item.Name);
-                Console.WriteLine("taken_id" + item.Shift_Taken_Id);
-            }
+            
+            //foreach (var item in db.Shifts)
+            //{
+            //    Console.WriteLine(item.Name);
+            //    Console.WriteLine("taken_id" + item.Shift_Taken_Id);
+            //}
             return db.Shifts;
         }
         public void AddShift(Shift shift)
         {
-            //  var sql = $"INSERT INTO shift()"
-            //  db.CUD()
-            Console.WriteLine("Add shift need to be inplemented!");
+            var sql = $"INSERT INTO shift VALUES('{shift.Name}','{shift.Description}',{shift.Competence_Id}, {shift.Shift_Id}," +
+              $"{shift.Shift_Taken_Id},'{shift.Start_Date.ToString("MM-dd-yyyy")}','{shift.End_Date.ToString("MM-dd-yyyy")}')";
+            Console.WriteLine("Add shift sql: " + sql);
+            db.CUD(sql);
         }
 
         public bool DeleteShift(int id)
@@ -54,11 +56,12 @@ namespace GucciFestival.Server.Models
             //    $" WHERE id = {item.Id}";
             //int rows = db.conn.Execute(sqlQuery);
             // return rows > 0;
-            // string sql = $"UPDATE shift SET shift_taken_id = {shift.Shift_Taken_Id} WHERE shift_id = {shift.Shift_Id}";
+             string sql = $"UPDATE shift SET name = '{shift.Name}', competence_id = {shift.Competence_Id}, shift_taken_id = {shift.Shift_Taken_Id}," +
+                $"start_time = '{shift.Start_Date.ToString("MM-dd-yyyy")}', end_time = '{shift.End_Date.ToString("MM-dd-yyyy")}' WHERE shift_id = {shift.Shift_Id}";
 
-            //  Console.WriteLine("Updateshift try sql: " + sql);
-            //  db.CUD(sql);
-            Console.WriteLine("Update shift need to be inplemented!");
+            Console.WriteLine("Update shift sql: " + sql);
+
+              db.CUD(sql);
 
 
             return false;

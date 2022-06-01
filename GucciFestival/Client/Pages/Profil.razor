@@ -1,5 +1,7 @@
 ﻿@using GucciFestival.Client.Models
+@using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
+@inject NavigationManager NavManager
 @page "/profil"
 <h3>Profil</h3>
 
@@ -27,8 +29,8 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 	<label for="Birthday">Birthday:</label>
 	<InputDate id="Birthday" @bind-Value="userModelV2.Birthday" class="form-control"/>
 </div>
-<Button id="button1"> Opdater profil</Button> 
-<Button id="button2"> Slet Profil</Button> 
+<Button id="button1" @onclick=UserUpdate> Opdater profil</Button> 
+<Button id="button2" @onclick=UserDelete> Slet Profil</Button> 
 
 <style>
 
@@ -56,6 +58,9 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 	private EditContext editContext;
 	private UserModel userModel = new UserModel();
 	private User userModelV2 = new User();
+
+	[Inject]
+	private IUserService UserService { get; set; }
 	protected override void OnInitialized()
 	{
 
@@ -64,9 +69,23 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 		userModel.Name = "Sebastian Søborg";
 		userModel.Password = "1234";
 		userModel.Tlf = 12345678;
-		
+
 		editContext = new EditContext(userModel);
 	}
+
+	private void UserDelete(){
+		UserService.DeleteUser(userModelV2);
+
+		Login.UserLogedin = null;
+		NavManager.NavigateTo("/login");
+		NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.MainSide);
+	}
+	private void UserUpdate()
+	{
+		UserService.UpdateUser(userModelV2);
+	}
+
+
 	public void HandleValidSubmit() {}
 	public void HandleInvalidSubmit() {}
 }

@@ -45,7 +45,7 @@ namespace GucciFestival.Client.Models
         public async Task<int> DeleteShift(Shift shift)
         {
             
-            var response = await httpClient.DeleteAsync("api/shiftapi" + shift.Shift_Id);
+            var response = await httpClient.DeleteAsync("api/shiftapi/" + shift.Shift_Id);
             var responseStatusCode = response.StatusCode;
             return (int)responseStatusCode;
         }

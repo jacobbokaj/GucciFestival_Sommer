@@ -7,5 +7,7 @@ namespace GucciFestival.Client.Services
         public Task<User[]?> GetAllUsers();
 
         Task<int> AddUser(User user);
+        Task<int> UpdateUser(User user);
+        public Task<int> DeleteUser(User user);
     }
 }

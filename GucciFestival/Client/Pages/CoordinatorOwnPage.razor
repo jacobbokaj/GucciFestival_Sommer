@@ -48,7 +48,7 @@ else
                        }
                     </InputSelect>
                 <div>          
-                    <button @onclick=ShiftAdd>Tilføj vagt</button>
+                    <button @onsubmit=ShiftAdd>Tilføj vagt</button>
 
                 </div>
 
@@ -255,7 +255,7 @@ else
 
         ////Henter den frilliges data, der blev gemt da den frillige loggede ind.
         //volenteerTarget = await localStore.GetItemAsync<User>("volenteer");
-
+        //  shiftTarget = shifts[0];
         List<User> volenteersTemp = new List<User>();
         volenteersTemp = (await VolenteerService.GetAllUsers()).ToList();       
         foreach (var item in volenteersTemp)
@@ -319,9 +319,28 @@ else
     }
 
 
-    private async Task ShiftAdd()
+    private void ShiftAdd()
     {
-        await   ShiftService.AddShift(new Shift());
+        Shift shiftAdd = new Shift();
+        shiftAdd.Name = shiftModel.Name;
+        Console.WriteLine("ShiftModel                      : "+shiftModel.Name);
+        shiftAdd.Description = "Default";
+        shiftAdd.Competence_Id = ((int)competences) + 1;
+
+        int newShift_Id = 0;
+        foreach (var item in shifts)
+        {
+            if(item.Shift_Id > newShift_Id)
+            {
+                newShift_Id = item.Shift_Id;
+            }
+        }
+        shiftAdd.Shift_Id = newShift_Id + 1;
+        shiftAdd.Shift_Taken_Id = -1;
+        shiftAdd.Start_Date = shiftModel.Start_Date;
+        shiftAdd.End_Date = shiftModel.End_Date;
+
+          ShiftService.AddShift(shiftAdd);
     }
     private async Task ShiftUpdate()
     {
@@ -334,7 +353,7 @@ else
 
     private bool ShiftTakenCheck()
     {
-        Console.WriteLine("ShiftTarget before -1: " + shiftTarget.Shift_Taken_Id);
+       // Console.WriteLine("ShiftTarget before -1: " + shiftTarget.Shift_Taken_Id);
         if (shiftTarget.Shift_Taken_Id != -1)
         {
             foreach (var item in volenteers)
@@ -343,7 +362,7 @@ else
                 {
                     return true;
                 }
-                Console.WriteLine("Shift id: " + shiftTarget.Shift_Taken_Id + " volenteer id: " + item.User_id);
+                //Console.WriteLine("Shift id: " + shiftTarget.Shift_Taken_Id + " volenteer id: " + item.User_id);
             }
         }
         return false;
