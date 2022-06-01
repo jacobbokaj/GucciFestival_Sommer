@@ -30,6 +30,7 @@ namespace GucciFestival.Server.Controllers
         [HttpPost]
         public void AddShift(Shift shift)
         {
+            Console.WriteLine("Update HTTPPOST");
             repository.AddShift(shift);
         }
         [HttpDelete]
@@ -40,6 +41,7 @@ namespace GucciFestival.Server.Controllers
         [HttpPut]
         public void Update(Shift shift)
         {
+            Console.WriteLine("Update HTTPPUT");
             repository.UpdateShift(shift);
         }
     }

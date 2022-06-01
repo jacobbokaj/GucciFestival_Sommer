@@ -7,7 +7,7 @@
 @inject NavigationManager NavManager
 
 
-<h3>CoordinatorOwnPage</h3>
+<h3>CoordinatorOwnPage @Login.UserLogedin.Name</h3>
 @*<button @onclick=NavigateToSideProfil>Profil</button>
 <button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsAvailable))">Vagter Ledige</button>
 <button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsTaken))">Vagter taget</button>
@@ -23,6 +23,37 @@ else
 {
     @switch (page)
     {
+        case CoordinatorPages.ShiftCreate:
+            <EditForm Model=@shiftModel class="row p-3">
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+                <div class="col-md-12 mb-3">
+                <label for="Name">Name</label>
+                <InputText id="Name" @bind-Value="shiftModel.Name" class="form-control"/>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="StartData">Start dato</label>
+                    <InputDate @bind-Value=shiftModel.Start_Date/>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="EndDate">Slut dato</label>
+                    <InputDate @bind-Value=shiftModel.End_Date/>
+                </div>
+                    <InputSelect id="Competence" @bind-Value="competences">
+                        @foreach (var item in competenceArray)
+                       {
+                           <option>@item</option>
+                       }
+                    </InputSelect>
+                <div>          
+                    <button @onclick=ShiftAdd>Tilføj vagt</button>
+
+                </div>
+
+            </EditForm>
+            break;
         case CoordinatorPages.ShiftsAvailable:
             <table class="table">
                 <thead>
@@ -97,6 +128,9 @@ else
                     {
                         <tr>
                             <td>@forecast.Name</td>
+                            <td>@forecast.Birthday</td>
+                            <td>@forecast.Phone</td>
+                            <td>@forecast.Email</td>
                            @* <td>@((Competences)forecast.Competence_id)</td>*@
                         </tr>
                     }
@@ -133,12 +167,12 @@ else
 
                 <div class="col-md-6 mb-3">
                     <label for="StartData">Start dato</label>
-                    <InputDate @bind-Value=shiftTarget.Start_Date/>
+                    <InputDate @bind-Value=shiftModel.Start_Date/>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="EndDate">Slut dato</label>
-                    <InputDate @bind-Value=shiftTarget.End_Date/>
+                    <InputDate @bind-Value=shiftModel.End_Date/>
                 </div>
                     <InputSelect id="Competence" @bind-Value="competences">
                         @foreach (var item in competenceArray)
@@ -154,11 +188,10 @@ else
                             <div>
                             <label>Frivilliges navn: @volenteer.Name</label>
                             </div>
-                        }
-
-                
+                        }               
                 </div>
-
+                <button @onclick=ShiftUpdate>Gem</button>
+                <button @onclick=ShiftDelete>Slet</button>
             </EditForm>
 
             
@@ -219,13 +252,24 @@ else
 
         ////Henter alle vagter der findes på pgadmin/sql databasen.
         shifts = (await ShiftService.GetAllShifts()).ToList();
+
         ////Henter den frilliges data, der blev gemt da den frillige loggede ind.
         //volenteerTarget = await localStore.GetItemAsync<User>("volenteer");
-        volenteers = (await VolenteerService.GetAllUsers()).ToList();
+
+        List<User> volenteersTemp = new List<User>();
+        volenteersTemp = (await VolenteerService.GetAllUsers()).ToList();       
+        foreach (var item in volenteersTemp)
+        {
+            if (item.Type_id == 2)
+            {
+                volenteers.Add(item);
+            }
+        }
     }
     protected override void OnInitialized()
     {
         pagesEvent = PageChange;
+        NavMenu.ChangeSideFlag(NavigateMenus.Coordinator);
 
     }
 
@@ -242,12 +286,15 @@ else
         this.page = page;
 
         Console.WriteLine("vagt info");
-
+        if(shiftTarget != null)
+        {
+            ShiftModelInsetValues();            
+        }
     }
 
     /// <summary>
-    /// flag = false: få alle vagter der ikke er taget.
     /// flag = true: få alle vagter der er taget.
+    /// flag = false: fir ledige vagter.
     /// </summary>
     /// <param name="flag"></param>
     private List<User> GetAllSpecificShift(bool flag)
@@ -255,8 +302,34 @@ else
         foreach (var item in volenteers)
         {
             if(item.User_id == 2){}
-    }
+        }
         return null;
+    }
+
+    private void ShiftModelInsetValues()
+    {
+        shiftModel.Name = shiftTarget.Name;
+        shiftModel.Description = shiftTarget.Description;
+        shiftModel.Competence_Id = shiftTarget.Competence_Id;
+        shiftModel.Shift_Id = shiftTarget.Shift_Id;
+        shiftModel.Shift_Taken_Id = shiftTarget.Shift_Taken_Id;
+        shiftModel.Start_Date = shiftTarget.Start_Date;
+        shiftModel.End_Date = shiftTarget.End_Date;
+        competences = (Competences)shiftModel.Competence_Id;
+    }
+
+
+    private async Task ShiftAdd()
+    {
+        await   ShiftService.AddShift(new Shift());
+    }
+    private async Task ShiftUpdate()
+    {
+        await ShiftService.UpdateShift(shiftTarget);
+    }
+    private async Task ShiftDelete()
+    {
+        await ShiftService.DeleteShift(shiftTarget);
     }
 
     private bool ShiftTakenCheck()
@@ -307,6 +380,12 @@ else
             NavManager.NavigateTo("/coordinatorOwnPage");
         }
         Console.WriteLine("New coordinator page");
+
+        if(pages == CoordinatorPages.ShiftCreate)
+        {
+            shiftModel = new Shift();
+        }
+
         page = pages;
         StateHasChanged();
     }

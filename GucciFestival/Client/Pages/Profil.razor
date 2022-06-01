@@ -1,4 +1,5 @@
 ﻿@using GucciFestival.Client.Models
+@using GucciFestival.Shared.Models
 @page "/profil"
 <h3>Profil</h3>
 
@@ -8,23 +9,23 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 <ValidationSummary/>
 <div class="col-mb-4">
 	<label for="Name">Name:</label>
-	<InputText id="Name" @bind-Value="userModel.Name" class="form-control"/>
+	<InputText id="Name" @bind-Value="userModelV2.Name" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Email">Email:</label>
-	<InputText id="Email" @bind-Value="userModel.Email" class="form-control"/>
+	<InputText id="Email" @bind-Value="userModelV2.Email" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Password">Password:</label>
-	<InputText id="Password" @bind-Value="userModel.Password" class="form-control"/>
+	<InputText id="Password" @bind-Value="userModelV2.Password" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Tlf">Tlf:</label>
-	<InputNumber id="Tlf" @bind-Value="userModel.Tlf" class="form-control"/>
+	<InputNumber id="Tlf" @bind-Value="userModelV2.Phone" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Birthday">Birthday:</label>
-	<InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control"/>
+	<InputDate id="Birthday" @bind-Value="userModelV2.Birthday" class="form-control"/>
 </div>
 <Button id="button1"> Opdater profil</Button> 
 <Button id="button2"> Slet Profil</Button> 
@@ -54,8 +55,11 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 @code {
 	private EditContext editContext;
 	private UserModel userModel = new UserModel();
+	private User userModelV2 = new User();
 	protected override void OnInitialized()
 	{
+
+		userModelV2 = Login.UserLogedin;
 		userModel.Email = "se-b@live.dk";
 		userModel.Name = "Sebastian Søborg";
 		userModel.Password = "1234";

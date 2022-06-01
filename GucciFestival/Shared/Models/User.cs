@@ -10,15 +10,15 @@ namespace GucciFestival.Shared.Models
     public class User
     {
         public string? Name { get; set; }
-        public DateTime? Birthday { get; private set; } = DateTime.Now;
+        public DateTime? Birthday { get; set; }
         public string? Email { get; set; }
-        public int? Phone { get; private set; }
+        public int? Phone { get;  set; }
 
-        public string? Password;
+        public string? Password { get; set; }
         //public int? Competence_id;
-        public int User_id;
-        public int? Type_id;
-        public string? Type;
+        public int User_id { get; set; }
+        public int? Type_id { get; set; }
+        public string? Type { get; set; }
 
         public List<Competences.Competences> competences;
         /// <summary>

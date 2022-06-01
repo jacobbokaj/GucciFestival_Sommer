@@ -17,6 +17,7 @@ namespace GucciFestival.Client.Models
         public ShiftService(HttpClient httpClient)
         {
            this.httpClient = httpClient;
+           
         }
         
         /// <summary>
@@ -29,12 +30,14 @@ namespace GucciFestival.Client.Models
         /// <returns></returns>
         public async Task<Shift[]?> GetAllShifts()
         {
+          
             Console.WriteLine("GetAllShifts");
             var result = await httpClient.GetFromJsonAsync<Shift[]>("api/shiftapi");
             return result;
         }
         public async Task<int> AddShift(Shift shift)
         {
+            Console.WriteLine("Add shift in client side");
             var result = await httpClient.PostAsJsonAsync<Shift>("api/shiftapi", shift);
             return (int)result.StatusCode;
         }
@@ -49,7 +52,7 @@ namespace GucciFestival.Client.Models
 
         public async Task<int> UpdateShift(Shift shift)
         {
-            var result = await httpClient.PostAsJsonAsync<Shift>("api/shiftapi", shift);
+            var result = await httpClient.PutAsJsonAsync<Shift>("api/shiftapi", shift);
             return (int)result.StatusCode;
         }
     }

@@ -10,10 +10,11 @@ namespace GucciFestival.Server.Models
         public List<User> GetAllUsers()
         {
             db.GetAllUsers("SELECT name,birthday, email, phone, password, user_id, type_id, type  FROM \"User\";");
-            List<User> users = new List<User>();
-            users.Add(new User());
-            users[0].Name = "hihi xd";
-            return users;
+            //List<User> users = new List<User>();
+            //users.Add(new User());
+            //users[0].Name = "hihi xd";
+            Console.WriteLine(db.Users[0].Password);
+            return db.Users;
         }
         public void AddUser(User user)
         {

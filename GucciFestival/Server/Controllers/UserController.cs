@@ -23,7 +23,7 @@ namespace GucciFestival.Server.Controllers
         {
             foreach (var item in repository.GetAllUsers())
             {
-                Console.WriteLine("Data: " +item.Name);
+                Console.WriteLine("Data  birthday: " +item.Birthday);
             }
             return repository.GetAllUsers();
         }

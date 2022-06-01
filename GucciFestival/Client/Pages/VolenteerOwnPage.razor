@@ -4,7 +4,7 @@
 @using GucciFestival.Shared.Models
 @inject NavigationManager NavManager
 @using GucciFestival.Shared.VolenteerPages;
-<h3>Frivlliges Navn: </h3>
+<h3>Frivlliges Navn:@Login.UserLogedin.Name </h3>
 <button @onclick=NewNavMenu>Nav menu test</button>
 <button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsOwn))">Egen vagter</button>
 <button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable))">Vagter ledige</button>
@@ -27,7 +27,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var forecast in shifts)
+                        @foreach (var forecast in GetShiftsSpecific(false,-1))
                         {
                             <tr>
                                 <td>@forecast.Name  </td>
@@ -70,7 +70,7 @@ else
                             <th>Start dato</th>
                             <th>Slut dato</th>
                         </tr>
-                         @foreach (var forecast in shifts)
+                         @foreach (var forecast in GetShiftsSpecific(true,0))
                         {
                             <tr>
                                 <td>@forecast.Name</td>
@@ -142,8 +142,35 @@ else
         NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.Volenteer);
     }
 
+    /// <summary>
+    /// flag = true, alle vagter denne bruger har taget.
+    /// flag = false, alle ledige vagter
+    /// </summary>
+    /// <param name="flag"></param>
+    /// <returns></returns>
+    private List<Shift> GetShiftsSpecific(bool flag, int user_id)
+    {
+        List<Shift> list = new List<Shift>();
+        foreach (var item in shifts)
+        {
+            if(item.Shift_Taken_Id == user_id && flag)
+            {
+                Console.WriteLine(item.Shift_Taken_Id + " user_id: " + user_id);
+                list.Add(item);
+            }else if(item.Shift_Taken_Id == -1 && flag == false)
+            {
+                list.Add(item);
+            }
+        }
+        return list;
+    }
 
-    private void TakeShift()
+
+
+
+
+
+    private async Task TakeShift()
     {
         if (shiftTakeCheckBoksFlag)
         {
@@ -152,6 +179,7 @@ else
                 if(item.Shift_Id == shiftTarget.Shift_Id)
                 {
                     item.Shift_Taken_Id = volenteerTarget.User_id;
+                    await ShiftService.UpdateShift(shiftTarget);
                 }
             }
             SetShiftTarget(null,VolenteerPages.ShiftsOwn);

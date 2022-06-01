@@ -9,7 +9,7 @@ namespace GucciFestival.Client.Models
     {
        
         public string Name { get; set; }
-        public DateTime Birthday { get; set; } = DateTime.Now;
+        public DateTime Birthday { get; set; }
 
 
         public string Email { get; set; }

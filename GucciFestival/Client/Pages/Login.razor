@@ -18,6 +18,7 @@
         break;
     case StartPage.Login:
     <h3>Log in </h3>
+        <h4>@userLoginMessage</h4>
     <EditForm EditContext=@editContextCreateUser 
      OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
     <DataAnnotationsValidator />
@@ -41,7 +42,6 @@
         </EditForm>
         break;
     case StartPage.CreateUser:
-        <h4>@userLoginMessage</h4>
         <EditForm EditContext=@editContextCreateUser 
          OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
         <DataAnnotationsValidator />
@@ -84,7 +84,7 @@
     public StartPage startPage;
 
 
-    public static User UserToLogin { get; private set; }
+    public static User UserLogedin { get; private set; }
 
 
     private List<User> users = new List<User>();
@@ -120,7 +120,7 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        //users = (await UserService.GetAllUsers()).ToList();      
+        users = (await UserService.GetAllUsers()).ToList();      
     }
 
 
@@ -187,11 +187,23 @@
             if (userLooping.Email == userModel.Email &&
                 userLooping.Password == userModel.Password)
             {
-                userTarget = userLooping;
+                UserLogedin = userLooping;
                 break;
             }
         }
-        NavManager.NavigateTo("/userownside");
+
+        if(UserLogedin != null)
+        {
+            if(UserLogedin.Type_id == 2)
+            {
+                NavManager.NavigateTo("/volenteerOwnPage");
+            }
+            else
+            {
+                NavManager.NavigateTo("/coordinatorOwnPage");
+                
+            }
+        }
         userLoginMessage = userTarget != null ? "Found user" : "Not found user";
     }
 
