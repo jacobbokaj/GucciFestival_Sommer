@@ -27,13 +27,17 @@ else
                     <tbody>
                         @foreach (var forecast in GetShiftsSpecific(false,-1))
                         {
+                        if (VolenteerHaveCompetence(forecast))
+                        {
                             <tr>
                                 <td>@forecast.Name  </td>
                                 <td>@((Competences)forecast.Competence_Id)</td>
-                                <td>@forecast.Start_Date</td>
-                                <td>@forecast.End_Date</td>
+                                <td>@forecast.Start_Time</td>
+                                <td>@forecast.End_Time</td>
                                 <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftAvailableRead))">Tag vagt</button>
                             </tr>
+                            
+                        }
                         }
                     </tbody>
                 </table>
@@ -44,10 +48,10 @@ else
                 <h4>Shift name @shiftTarget.Name</h4>
 
                 <h3>Start dato></h3>
-                <h3>@shiftTarget.Start_Date</h3>
+                <h3>@shiftTarget.Start_Time</h3>
 
                 <h3>Slut dato</h3>
-                <h3>@shiftTarget.End_Date</h3>
+                <h3>@shiftTarget.End_Time</h3>
 
                 <h3>Description</h3>
                
@@ -73,8 +77,8 @@ else
                             <tr>
                                 <td>@forecast.Name</td>
                                 <td>@((Competences)forecast.Competence_Id)</td>
-                                <td>@forecast.Start_Date</td>
-                                <td>@forecast.End_Date</td>
+                                <td>@forecast.Start_Time</td>
+                                <td>@forecast.End_Time</td>
                             </tr>
                         }
                     </thead>
@@ -132,6 +136,20 @@ else
     {
         volenteerPagesEvent = PageChange;
         NavMenu.NavMenuChange(NavigateMenus.Volenteer);
+    }
+
+
+
+    public bool VolenteerHaveCompetence(Shift vol)
+    {
+        foreach (var item in Login.UserLogedin.Competences_Id)
+        {
+            if (item == vol.Competence_Id)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -25,7 +25,7 @@ namespace GucciFestival.Server.Models
         public void AddShift(Shift shift)
         {
             var sql = $"INSERT INTO shift VALUES('{shift.Name}',{shift.Competence_Id}, {shift.Shift_Id}," +
-              $"{shift.Shift_Taken_Id},'{shift.Start_Date.ToString("MM-dd-yyyy")}','{shift.End_Date.ToString("MM-dd-yyyy")}')";
+              $"{shift.Shift_Taken_Id},'{shift.Start_Time.ToString("MM-dd-yyyy")}','{shift.End_Time.ToString("MM-dd-yyyy")}')";
             db.CUD(sql);
         }
 
@@ -41,7 +41,7 @@ namespace GucciFestival.Server.Models
         public bool UpdateShift(Shift shift)
         {
              string sql = $"UPDATE shift SET name = '{shift.Name}', competence_id = {shift.Competence_Id}, shift_taken_id = {shift.Shift_Taken_Id}," +
-                $"start_time = '{shift.Start_Date.ToString("MM-dd-yyyy")}', end_time = '{shift.End_Date.ToString("MM-dd-yyyy")}' WHERE shift_id = {shift.Shift_Id}";
+                $"start_time = '{shift.Start_Time.ToString("MM-dd-yyyy")}', end_time = '{shift.End_Time.ToString("MM-dd-yyyy")}' WHERE shift_id = {shift.Shift_Id}";
               db.CUD(sql);
             //Vil altid return true, fordi oplysningerne bliver checket i coordinator page, da, f.eks. navnet bliver ændret bliver det også ændret i databasen.
             //Metoden bool er med, fordi det gør applikationen mere fleksibel for videre udvikling

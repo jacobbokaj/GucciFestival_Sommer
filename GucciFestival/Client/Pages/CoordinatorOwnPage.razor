@@ -148,10 +148,10 @@ else
                 <h4>Frivilliges info  @volenteer.Name</h4>
 
                 <h3>Start dato</h3>
-                <h3>@shiftTarget.Start_Date</h3>
+                <h3>@shiftTarget.Start_Time</h3>
 
                 <h3>Slut dato</h3>
-                <h3>@shiftTarget.End_Date</h3>
+                <h3>@shiftTarget.End_Time</h3>
 
                 
                
@@ -322,8 +322,8 @@ else
     private void ShiftModelInsetValues()
     {
         shiftModel.Name = shiftTarget.Name;    
-        shiftModel.Start_Date = shiftTarget.Start_Date;
-        shiftModel.End_Date = shiftTarget.End_Date;
+        shiftModel.Start_Date = shiftTarget.Start_Time;
+        shiftModel.End_Date = shiftTarget.End_Time;
         competences = (Competences)shiftTarget.Competence_Id;
     }
 
@@ -352,8 +352,8 @@ else
             shiftAdd.Shift_Id = newShift_Id + 1;
             //-1 står for at vagten ikke er taget.
             shiftAdd.Shift_Taken_Id = -1;
-            shiftAdd.Start_Date = shiftModel.Start_Date;
-            shiftAdd.End_Date = shiftModel.End_Date;
+            shiftAdd.Start_Time = shiftModel.Start_Date;
+            shiftAdd.End_Time = shiftModel.End_Date;
 
             ShiftService.AddShift(shiftAdd);
         }
@@ -367,8 +367,8 @@ else
 
             shift_update = shiftTarget;
             shift_update.Name = shiftModel.Name;
-            shift_update.Start_Date = shiftModel.Start_Date;
-            shift_update.End_Date = shiftModel.End_Date;
+            shift_update.Start_Time = shiftModel.Start_Date;
+            shift_update.End_Time = shiftModel.End_Date;
             //+1 fordi pgadmin/sql tabeller starter fra 1 og C#/ denne applikation starter det fra 0.
             shift_update.Competence_Id = (int)competences + 1;
 

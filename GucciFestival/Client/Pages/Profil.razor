@@ -61,12 +61,15 @@ else
     private IUserService UserService { get; set; }
     protected override void OnInitialized()
     {
+        if(Login.UserLogedin != null)
+        {
 
-        userModel.Name = Login.UserLogedin.Name;
-        userModel.Email = Login.UserLogedin.Email;
-        userModel.Password = Login.UserLogedin.Password;
-        userModel.Phone = Login.UserLogedin.Phone;
-        userModel.Birthday = Login.UserLogedin.Birthday;
+            userModel.Name = Login.UserLogedin.Name;
+            userModel.Email = Login.UserLogedin.Email;
+            userModel.Password = Login.UserLogedin.Password;
+            userModel.Phone = Login.UserLogedin.Phone;
+            userModel.Birthday = Login.UserLogedin.Birthday;
+        }
 
 
 
@@ -117,10 +120,11 @@ else
                 if (item.HaveCompetenceFlag)
                 {
                     //Den siger +1, fordi C#/ i denne applikation starter alt fra 0, men pgadmin/sql starter alt fra 1 i tables.
-                    userUpdate.Competences_Id.Add(item.CompetenceIndex +1);
+                    userUpdate.Competences_Id.Add(item.CompetenceIndex + 1);
                 }
             }
             UserService.UpdateUser(userUpdate);
+            Login.UserLogedin = userUpdate;
         }
     }
 }

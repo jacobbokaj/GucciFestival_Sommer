@@ -34,10 +34,6 @@ namespace GucciFestival.Server.Controllers
         public void AddUser(User user)
         {
 
-
-            
-
-
             repository.AddUser(user);
         }
         [HttpPut]
@@ -46,6 +42,7 @@ namespace GucciFestival.Server.Controllers
             Console.WriteLine("Update HTTPPUT");
             repository.UpdateUser(user);
         }
+
         [HttpDelete("{id:int}")]
         public void DeleteUser(int id)
         {
