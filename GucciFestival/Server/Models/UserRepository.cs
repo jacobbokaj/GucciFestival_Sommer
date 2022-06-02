@@ -19,23 +19,20 @@ namespace GucciFestival.Server.Models
             for     (int i = 0; i < db.Users.Count; i++)
             {
                 for (int j = 0; j < db.UserCompetences.Count; j++)
-                    if(db.Users[i].User_id == db.UserCompetences[j].User_User_Id)
+                    //Den siger +1, fordi C#/ i denne applikation starter alt fra 0, men pgadmin/sql starter alt fra 1 i tables.
+                    if (db.Users[i].User_id == db.UserCompetences[j].User_User_Id)
                     {
+
                        db.Users[i].Competences_Id.Add(db.UserCompetences[j].Competence_Competence_Id - 1);
-                   //     Console.WriteLine($"User Competence {db.Users[i].Name} Enum: {db.Users[i].Competences[0]} ");
                     }
-                Console.WriteLine($" user {db.Users[i].Name} competence count: {db.Users[i].Competences_Id.Count}");
             }
-            //List<User> users = new List<User>();
-            //users.Add(new User());
-            //users[0].Name = "hihi xd";
-           // Console.WriteLine(db.Users[0].Password);
             return db.Users;
         }
         public void AddUser(User user)
         {
+            //En list kan ikke direkte sættes ind i sql statement, derfor bruges denne forloop for at "oversætte det"
+            //Denne bliver til f.eks. hvis competence 2,3,5 i en list, bliver den lavet til {2,3,5}
             string sqlArray = "{";
-
             for (int i = 0; i < user.Competences_Id.Count; i++)
             {
                 sqlArray += $"{user.Competences_Id[i]}" + (i + 1 < user.Competences_Id.Count ? "," : "");
@@ -47,18 +44,15 @@ namespace GucciFestival.Server.Models
             string sql = $"call create_user5('{user.Name}','{user.Birthday.ToString("MM-dd-yyyy")}', '{user.Email}','{user.Phone}','{user.Password}', '{sqlArray}')";
 
 
-            Console.WriteLine("Add user sql: " + sql);
-            db.CUD(sql);;
+            db.CUD(sql);
         }
 
         public bool UpdateUser(User user)
         {
-            //string sql = $"UPDATE \"User\" " +
-            //    $"SET name= '{user.Name}', birthday = '{user.Birthday.ToString("MM-dd-yyyy")}', email = '{user.Email}', phone = {user.Phone}," +
-            //    $" password = '{user.Password}', User_id = {user.User_id} WHERE User_id = {user.User_id}";
 
+            //En list kan ikke direkte sættes ind i sql statement, derfor bruges denne forloop for at "oversætte det"
+            //Denne bliver til f.eks. hvis competence 2,3,5 i en list, bliver den lavet til {2,3,5}
             string sqlArray = "{";
-
             for (int i = 0; i < user.Competences_Id.Count; i++)
             {
                 sqlArray += $"{user.Competences_Id[i]}" + (i + 1 < user.Competences_Id.Count ? "," : "");
@@ -70,8 +64,9 @@ namespace GucciFestival.Server.Models
 
             string sql = $"call update_user1('{user.Name}','{user.Birthday.ToString("MM-dd-yyyy")}','{user.Email}',{user.Phone}," +
                 $"'{user.Password}',{user.User_id},'{sqlArray}')";
-            Console.WriteLine("USER UPDATE SQL: "+ sql);
+            Console.WriteLine(sql);
             db.CUD(sql);
+            //Metoden bool er med, fordi det gør applikationen mere fleksibel for videre udvikling
             return true;
         }
 
@@ -79,6 +74,7 @@ namespace GucciFestival.Server.Models
         {
             string sql = $"call delete_user1({user_id})";
             db.CUD(sql);
+            //Metoden bool er med, fordi det gør applikationen mere fleksibel for videre udvikling
             return true;
         }
     }

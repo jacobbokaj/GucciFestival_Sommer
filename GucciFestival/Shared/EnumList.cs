@@ -48,24 +48,15 @@ namespace GucciFestival.Shared
         {
             ShiftsAvailable,
             ShiftsTaken,
-            ShiftCreate,
+            ShiftAdd,
             Volenteers,
             VolenteersRead,
             ShiftRead,
         }
     }
-    namespace TaskStatus
-    {
-        public enum TaskStatus
-        {
-            Planning,
-            Execution,
-            Perform
-        }
-    }
     namespace LoginPage
     {
-        public enum LoginPage
+        public enum LoginPages
         {
             StartPage,
             Login,

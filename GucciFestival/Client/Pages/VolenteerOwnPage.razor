@@ -2,20 +2,16 @@
 @using GucciFestival.Shared.Competences;
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
-@inject NavigationManager NavManager
+@using GucciFestival.Shared.NavigateMenus;
 @using GucciFestival.Shared.VolenteerPages;
-@*<button @onclick=NewNavMenu>Nav menu test</button>
-<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsOwn))">Egen vagter</button>
-<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable))">Vagter ledige</button>*@
+@inject NavigationManager NavManager
 @if(Login.UserLogedin == null){
     <h1>Ikke logget ind på en frivillige</h1>
-
 }
 else
 {
     <h3>Frivlliges Navn:@Login.UserLogedin.Name </h3>
-
-    @switch (volenteerPages)
+    @switch (volenteerPage)
     {
         case VolenteerPages.ShiftsAvailable:
                 <table class="table">
@@ -72,7 +68,7 @@ else
                             <th>Start dato</th>
                             <th>Slut dato</th>
                         </tr>
-                         @foreach (var forecast in GetShiftsSpecific(true,0))
+                         @foreach (var forecast in GetShiftsSpecific(true,Login.UserLogedin.User_id))
                         {
                             <tr>
                                 <td>@forecast.Name</td>
@@ -88,13 +84,13 @@ else
 }
 @code {
 
+    private VolenteerPages volenteerPage;
 
     /// <summary>
     /// Brugt til checkboks, checke om "user"/frivllig er sikker på at tage vagten
     /// </summary>
     private bool shiftTakeCheckBoksFlag;
 
-    private VolenteerPages volenteerPages;
     /// <summary>
     /// Den frillige brugers her og får dataen ved hjælp af "blazored.localstorage"
     /// Den frillige localstorage ved sat ind, da den frillige loggede ind.
@@ -110,11 +106,11 @@ else
 
 
 
-    //Shift Information
-    private EditContext editContextShiftInfo;
 
-
-
+    /// <summary>
+    /// Giver adgang til at navmenu kan "styre", hvilken coordinator side det skal være, ved hjælp af navigations knapperne i venstre side.
+    /// Denne delegate gør det muligt at kalde fra en static metode til en ikke static metode.
+    /// </summary>
     private static Action<VolenteerPages> volenteerPagesEvent;
 
 
@@ -135,13 +131,9 @@ else
     protected override void OnInitialized()
     {
         volenteerPagesEvent = PageChange;
-        NewNavMenu();
+        NavMenu.NavMenuChange(NavigateMenus.Volenteer);
     }
 
-    private void NewNavMenu()
-    {
-        NavMenu.NavMenuChange(GucciFestival.Shared.NavigateMenus.NavigateMenus.Volenteer);
-    }
 
     /// <summary>
     /// flag = true, alle vagter denne bruger har taget.
@@ -154,9 +146,9 @@ else
         List<Shift> list = new List<Shift>();
         foreach (var item in shifts)
         {
+            Console.WriteLine(item.Shift_Taken_Id + " user_id: " + user_id);
             if(item.Shift_Taken_Id == user_id && flag)
             {
-                Console.WriteLine(item.Shift_Taken_Id + " user_id: " + user_id);
                 list.Add(item);
             }else if(item.Shift_Taken_Id == -1 && flag == false)
             {
@@ -175,24 +167,33 @@ else
     {
         if (shiftTakeCheckBoksFlag)
         {
+            shiftTarget.Shift_Taken_Id = Login.UserLogedin.User_id;
+            await   ShiftService.UpdateShift(shiftTarget);
             foreach (var item in shifts)
             {
                 if(item.Shift_Id == shiftTarget.Shift_Id)
                 {
                     item.Shift_Taken_Id = volenteerTarget.User_id;
-                    await ShiftService.UpdateShift(shiftTarget);
                 }
             }
             SetShiftTarget(null,VolenteerPages.ShiftsOwn);
-        }
-    }
 
+            shifts = (await ShiftService.GetAllShifts()).ToList();
+            shiftTakeCheckBoksFlag = false;
+        }
+        
+    }
+    /// <summary>
+    /// Hvilken vagt oplysninger der bliver kigget på.
+    /// </summary>
+    /// <param name="shift"></param>
+    /// <param name="page"></param>
     private void SetShiftTarget(Shift shift,VolenteerPages page)
     {
         shiftTarget = shift;
-        this.volenteerPages = page;
+        this.volenteerPage = page;
         Console.WriteLine("vagt info");
-        Console.WriteLine("VolenteerPages: " + volenteerPages);
+        Console.WriteLine("VolenteerPages: " + volenteerPage);
 
     }
 
@@ -200,12 +201,23 @@ else
     {
         NavManager.NavigateTo("/profil");
     }
-
+    /// <summary>
+    /// Bliver kaldt på kun i navmenu, for at navigations knapper i venstre side kan bruges til noget.
+    /// </summary>
+    /// <param name="page"></param>
     public static void NavigateToVolenteerPage(VolenteerPages page)
     {
 
         volenteerPagesEvent?.Invoke(page);
     }
+
+
+    /// <summary>
+    /// Denne metode bliver kaldt på når volenteerPagesEvent invoker.
+    /// "NavigateToVolenteerPage" gør den invoke.
+    /// Statics metoder kan ikke kalde på ikke statics metoder eller ikke statics variabler. Som gør vi bruger delegates.
+    /// </summary>
+    /// <param name="page"></param>
     private void PageChange(VolenteerPages page)
     {
         if (NavManager.Uri != (NavManager.BaseUri.ToString() + "volenteerOwnPage"))

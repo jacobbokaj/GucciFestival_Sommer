@@ -1,4 +1,5 @@
 ﻿@page "/coordinatorOwnPage"
+@using GucciFestival.Client.EditformModels
 @using GucciFestival.Shared.Competences;
 @using GucciFestival.Shared.CoordinatorPages;
 @using GucciFestival.Client.Services
@@ -10,17 +11,16 @@
 @if (Login.UserLogedin == null)
 {
     <h1>Ikke logget ind på en coordinator</h1>
-    NavMenu.NavMenuChange(NavigateMenus.MainSide);
 }
 else
 {
     <h3>CoordinatorOwnPage @Login.UserLogedin.Name</h3>
 
 
-    @switch (page)
+    @switch (coordinatorPage)
     {
-        case CoordinatorPages.ShiftCreate:
-            <EditForm Model=@shiftModel class="row p-3">
+        case CoordinatorPages.ShiftAdd:
+            <EditForm Model=@shiftModel Context="formContext" class="row p-3">
                 <DataAnnotationsValidator/>
                 <ValidationSummary/>
                 <div class="col-md-12 mb-3">
@@ -44,10 +44,8 @@ else
                        }
                     </InputSelect>
                 <div>          
-                    <button @onclick=ShiftAdd>Tilføj vagt</button>
-
+                    <button @onclick="(() =>ShiftAdd(formContext))">Tilføj vagt</button>
                 </div>
-
             </EditForm>
             break;
         case CoordinatorPages.ShiftsAvailable:
@@ -64,11 +62,14 @@ else
                 <tbody>
                     @foreach (var forecast in shifts)
                     {
-                        <tr>
-                            <td>@forecast.Name</td>
-                            <td>@((Competences)(forecast.Competence_Id -1))</td>
-                            <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
-                        </tr>
+                        if(GetShiftTakenFlag(forecast) == false)
+                        {                       
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@((Competences)(forecast.Competence_Id -1))</td>
+                                <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -88,11 +89,14 @@ else
                 <tbody>
                     @foreach (var forecast in shifts)
                     {
-                        <tr>
-                            <td>@forecast.Name</td>
-                            <td>@((Competences)(forecast.Competence_Id-1))</td>
-                            <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
-                        </tr>
+                        @if (GetShiftTakenFlag(forecast))
+                        {                      
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@((Competences)(forecast.Competence_Id-1))</td>
+                                <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -156,7 +160,7 @@ else
             </div>
             break;
         case CoordinatorPages.ShiftRead:
-            <EditForm Model=@shiftModel class="row p-3">
+            <EditForm Model=@shiftModel Context="formContext" class="row p-3">
                 <DataAnnotationsValidator/>
                 <ValidationSummary/>
                 <div class="col-md-12 mb-3">
@@ -189,8 +193,8 @@ else
                             </div>
                         }               
                 </div>
-                <button @onclick=ShiftUpdate>Gem</button>
-                <button @onclick=ShiftDelete>Slet</button>
+                <button type="submit" @onclick="(() => ShiftUpdate(formContext))">Gem</button>
+                <button type="submit" @onclick="(() =>ShiftDelete(formContext))">Slet</button>
             </EditForm>
 
             
@@ -200,10 +204,7 @@ else
 }
 @code {
 
-
-
-
-    private CoordinatorPages page;
+    private CoordinatorPages coordinatorPage;
 
     /// <summary>
     /// Den frillige brugers her og får dataen ved hjælp af "blazored.localstorage"
@@ -215,14 +216,14 @@ else
     /// </summary>
     private Shift shiftTarget = new Shift();
 
-    private Shift shiftModel = new Shift();
+    private ShiftModel shiftModel = new ShiftModel();
     private List<Shift> shifts = new List<Shift>();
 
     private User volenteer = new User();
     private List<User> volenteers = new List<User>();
 
 
-
+    //Bruges til dropdown menu.
     private Competences competences;
     private string[] competenceArray = new string[7] { Competences.Førstehjælpskursus.ToString(),Competences.Elektriker.ToString(),
                                                        Competences.Tømrer.ToString(),Competences.Kørekort.ToString(),Competences.Rengøring.ToString(),
@@ -230,16 +231,11 @@ else
 
 
 
-
-    //Shift Information
-    private EditContext editContextShiftInfo;
-
-
-
-    private static Action<CoordinatorPages> pagesEvent;
-
-
-
+    /// <summary>
+    /// Giver adgang til at navmenu kan "styre", hvilken coordinator side det skal være, ved hjælp af navigations knapperne i venstre side.
+    /// Denne delegate gør det muligt at kalde fra en static metode til en ikke static metode. Ved hjælp af "PageChange" metoden bliver subscribede til den.
+    /// </summary>
+    private static Action<CoordinatorPages> coordinatorPagesEvent;
 
     [Inject]
     public IUserService VolenteerService { get; set; }
@@ -267,7 +263,8 @@ else
     }
     protected override void OnInitialized()
     {
-        pagesEvent = PageChange;
+        //Her subsriber "pageChange". Der gør når "coordinatorPagesEvent" invoker bliver PageChange kaldt.
+        coordinatorPagesEvent = PageChange;
         NavMenu.NavMenuChange(NavigateMenus.Coordinator);
 
     }
@@ -289,10 +286,17 @@ else
         return false;
     }
 
+
+    private bool GetShiftTakenFlag(Shift shift){
+
+        return shift.Shift_Taken_Id != -1 ? true : false;
+    }
+
+
     private void SetShiftTarget(Shift shift, CoordinatorPages page)
     {
         shiftTarget = shift;
-        this.page = page;
+        this.coordinatorPage = page;
 
         Console.WriteLine("vagt info");
         if(shiftTarget != null)
@@ -317,64 +321,78 @@ else
 
     private void ShiftModelInsetValues()
     {
-        shiftModel.Name = shiftTarget.Name;
-       
-        shiftModel.Competence_Id = shiftTarget.Competence_Id;
-        shiftModel.Shift_Id = shiftTarget.Shift_Id;
-        shiftModel.Shift_Taken_Id = shiftTarget.Shift_Taken_Id;
+        shiftModel.Name = shiftTarget.Name;    
         shiftModel.Start_Date = shiftTarget.Start_Date;
         shiftModel.End_Date = shiftTarget.End_Date;
-        competences = (Competences)shiftModel.Competence_Id;
+        competences = (Competences)shiftTarget.Competence_Id;
     }
 
 
-    private void ShiftAdd()
+    private void ShiftAdd(EditContext formContext)
     {
-        Shift shiftAdd = new Shift();
-        shiftAdd.Name = shiftModel.Name;
-        Console.WriteLine("ShiftModel                      : "+shiftModel.Name);
-       
-        shiftAdd.Competence_Id = ((int)competences) + 1;
-
-        int newShift_Id = 0;
-        foreach (var item in shifts)
+        bool formIsValid = formContext.Validate();
+        if (formIsValid)
         {
-            if(item.Shift_Id > newShift_Id)
+
+            Shift shiftAdd = new Shift();
+            shiftAdd.Name = shiftModel.Name;
+            //+1 fordi pgadmin/sql tabeller starter fra 1 og C#/ denne applikation starter det fra 0.
+            shiftAdd.Competence_Id = ((int)competences) + 1;
+
+            //newShift_Id gør at den nye shift får det højste i id.
+            int newShift_Id = 0;
+            foreach (var item in shifts)
             {
-                newShift_Id = item.Shift_Id;
+                if(item.Shift_Id > newShift_Id)
+                {
+                    newShift_Id = item.Shift_Id;
+                }
             }
+            //Den siger +1, fordi C#/ i denne applikation starter alt fra 0, men pgadmin/sql starter alt fra 1 i tables.
+            shiftAdd.Shift_Id = newShift_Id + 1;
+            //-1 står for at vagten ikke er taget.
+            shiftAdd.Shift_Taken_Id = -1;
+            shiftAdd.Start_Date = shiftModel.Start_Date;
+            shiftAdd.End_Date = shiftModel.End_Date;
+
+            ShiftService.AddShift(shiftAdd);
         }
-        shiftAdd.Shift_Id = newShift_Id + 1;
-        shiftAdd.Shift_Taken_Id = -1;
-        shiftAdd.Start_Date = shiftModel.Start_Date;
-        shiftAdd.End_Date = shiftModel.End_Date;
-
-        ShiftService.AddShift(shiftAdd);
     }
-    private async Task ShiftUpdate()
+    private void ShiftUpdate(EditContext formContext)
     {
-        Shift shift_update = new Shift();
+        bool formIsValid = formContext.Validate();
+        if (formIsValid)
+        {          
+            Shift shift_update = new Shift();
 
-        shift_update = shiftTarget;
-        shift_update.Name = shiftModel.Name;
-        shift_update.Start_Date = shiftModel.Start_Date;
-        shift_update.End_Date = shiftModel.End_Date;
-        shift_update.Competence_Id = (int)competences + 1;
+            shift_update = shiftTarget;
+            shift_update.Name = shiftModel.Name;
+            shift_update.Start_Date = shiftModel.Start_Date;
+            shift_update.End_Date = shiftModel.End_Date;
+            //+1 fordi pgadmin/sql tabeller starter fra 1 og C#/ denne applikation starter det fra 0.
+            shift_update.Competence_Id = (int)competences + 1;
 
 
 
-        await ShiftService.UpdateShift(shift_update);
+            ShiftService.UpdateShift(shift_update);
+        }
     }
-    private void ShiftDelete()
+    private void ShiftDelete(EditContext formContext)
     {
+        bool formIsValid = formContext.Validate();
 
-        ShiftService.DeleteShift(shiftTarget);
-        page = CoordinatorPages.ShiftsAvailable;
+        if (formIsValid)
+        {
+
+            ShiftService.DeleteShift(shiftTarget);
+            //Går tilbage til ledige vagter listen, fordi den vagt der bliver kigget på blev slettet.
+            coordinatorPage = CoordinatorPages.ShiftsAvailable;
+        }
     }
 
     private bool ShiftTakenCheck()
     {
-       // Console.WriteLine("ShiftTarget before -1: " + shiftTarget.Shift_Taken_Id);
+        //-1 er sat til ikke taget, alt over -1 er et user_id. Dog undtagen 0, fordi pgadmin/sql starter fra 1 i tabeller.
         if (shiftTarget.Shift_Taken_Id != -1)
         {
             foreach (var item in volenteers)
@@ -383,37 +401,32 @@ else
                 {
                     return true;
                 }
-                //Console.WriteLine("Shift id: " + shiftTarget.Shift_Taken_Id + " volenteer id: " + item.User_id);
             }
         }
         return false;
     }
 
-
-    private void CheckVolenteer(User volenteer)
-    {
-
-    }
-
-
-    private void NewNavMenu(NavigateMenus navigateMenu)
-    {
-
-        NavMenu.NavMenuChange(navigateMenu);
-        StateHasChanged();
-    }
     private void NavigateToSideProfil()
     {
         NavManager.NavigateTo("/profil");
     }
 
-    public static void NavigateToVolenteerPage(CoordinatorPages pages)
+    /// <summary>
+    /// Bliver kaldt på kun i navmenu, for at navigations knapper i venstre side kan bruges til noget.
+    /// </summary>
+    /// <param name="page"></param>
+    public static void NavigateToVolenteerPage(CoordinatorPages page)
     {
-        pagesEvent?.Invoke(pages);
+        coordinatorPagesEvent?.Invoke(page);
     }
 
-
-    public void PageChange(CoordinatorPages pages)
+    /// <summary>
+    /// Denne metode bliver kaldt på når coordinatorPagesEvent invoker.
+    /// "NavigateToVolenteerPage" gør den invoke.
+    /// Statics metoder kan ikke kalde på ikke statics metoder eller ikke statics variabler. Som gør vi bruger delegates.
+    /// </summary>
+    /// <param name="page"></param>
+    public void PageChange(CoordinatorPages page)
     {
         if (NavManager.Uri != (NavManager.BaseUri.ToString() + "coordinatorOwnPage"))
         {
@@ -421,12 +434,12 @@ else
         }
         Console.WriteLine("New coordinator page");
 
-        if(pages == CoordinatorPages.ShiftCreate)
+        if(page == CoordinatorPages.ShiftAdd)
         {
-            shiftModel = new Shift();
+            shiftModel = new ShiftModel();
         }
 
-        page = pages;
+        coordinatorPage = page;
         StateHasChanged();
     }
 }

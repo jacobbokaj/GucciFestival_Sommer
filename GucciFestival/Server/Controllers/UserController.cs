@@ -15,6 +15,7 @@ namespace GucciFestival.Server.Controllers
         {
             if (repository != null)
             {
+                //Henter classen userRepository for at få adgang til alle dapper metoderne, som kalder på pgadmin/sql.
                 this.repository = repository;
             }
         }

@@ -18,10 +18,6 @@ builder.Services.AddHttpClient<IShiftService, ShiftService>(client =>
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
 });
 
-builder.Services.AddHttpClient<IUserCompetenceService, UserCompetenceService>(client =>
-{
-    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-});
 
 
 builder.Services.AddHttpClient<IUserService, UserService>(client =>

@@ -11,13 +11,13 @@
 
 @switch (loginPage)
 {
-    case LoginPage.StartPage:
+    case LoginPages.StartPage:
         <h3> Login in</h3>
-        <button @onclick="(()=>SetLoginPage(LoginPage.Login))" class="btn-outline-primary">log in</button>
-        <button @onclick="(()=>SetLoginPage(LoginPage.AddUser))" class="btn-outline-primary">opret bruger</button>
+        <button @onclick="(()=>SetLoginPage(LoginPages.Login))" class="btn-outline-primary">log in</button>
+        <button @onclick="(()=>SetLoginPage(LoginPages.AddUser))" class="btn-outline-primary">opret bruger</button>
 
         break;
-    case LoginPage.Login:
+    case LoginPages.Login:
         <h3>Log in </h3>
         <h4>@userLoginMessage</h4>
         <EditForm Model=@loginModel
@@ -36,10 +36,10 @@
             </div>
 
             <button type="submit" class="btn-outline-primary" @onclick="@(() => UserLogin(formContext))">Login</button>
-            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPage.StartPage))">MainSide</button>
+            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPages.StartPage))">MainSide</button>
         </EditForm>
         break;
-    case LoginPage.AddUser:
+    case LoginPages.AddUser:
         <EditForm EditContext=userAddContext OnValidSubmit=AddUserHandleValidSubmit>
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -77,14 +77,14 @@
             }
 
             <button type="submit" class="btn-outline-primary">Lav frivllig konto</button>
-            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPage.StartPage))">MainSide</button>
+            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPages.StartPage))">MainSide</button>
         </EditForm>
         break;
 }
 
 @code {
 
-    public LoginPage loginPage;
+    public LoginPages loginPage;
 
 
     private Competences competence;
@@ -142,7 +142,7 @@
     /// Vise, hvilken udsende der skal vises på loginpage.
     /// </summary>
     /// <param name="startPage"></param>
-    public void SetLoginPage(LoginPage startPage)
+    public void SetLoginPage(LoginPages startPage)
     {
         NavMenu.NavMenuChange(NavigateMenus.MainSide);
         this.loginPage = startPage;
@@ -181,24 +181,40 @@
             }
         }
     }
-    public void AddUserHandleValidSubmit()
+    public async Task AddUserHandleValidSubmit()
     {
-        Console.WriteLine("Hello handle Valid");
-        User userAdd = new User();
-        userAdd.Name = userAddModel.Name;
-        userAdd.Birthday = userAddModel.Birthday;
-        userAdd.Email = userAddModel.Email;
-        userAdd.Phone = userAddModel.Phone;
-        userAdd.Password = userAddModel.Password;
-
-        foreach (var item in competenceCheckBoxes)
+        bool foundDuplicate = false;
+        foreach (var item in users)
         {
-            if (item.HaveCompetenceFlag)
+            if(item.Email == userAddModel.Email)
             {
-                userAdd.Competences_Id.Add(item.CompetenceIndex + 1);
+                foundDuplicate = true;
             }
         }
+        if(foundDuplicate == false)
+        {           
+            Console.WriteLine("Hello handle Valid");
+            User userAdd = new User();
+            userAdd.Name = userAddModel.Name;
+            userAdd.Birthday = userAddModel.Birthday;
+            userAdd.Email = userAddModel.Email;
+            userAdd.Phone = userAddModel.Phone;
+            userAdd.Password = userAddModel.Password;
 
-        UserService.AddUser(userAdd);
+            //Alle checkbox der har et "flueben" vil deres competence_Id blive addet til databasen.
+            //Til userens kompetencer
+            foreach (var item in competenceCheckBoxes)
+            {
+                if (item.HaveCompetenceFlag)
+                {
+                    //Den siger +1, fordi C#/ i denne applikation starter alt fra 0, men pgadmin/sql starter alt fra 1 i tables.
+                    userAdd.Competences_Id.Add(item.CompetenceIndex + 1);
+                }
+            }
+
+            await  UserService.AddUser(userAdd);
+            users = (await UserService.GetAllUsers()).ToList();
+        }
+
     }
 }

@@ -40,7 +40,7 @@
                     <NavLink class="nav-link" href="profil">
                         <span class="oi oi-home" aria-hidden="true"></span> Profil
                     </NavLink>
-                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftCreate))">
+                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftAdd))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Lav vagt
                     </button>
 
@@ -100,8 +100,7 @@
     /// <summary>
     /// Delegate, gør det muligt at kunne ændre navigations knapper i venstre side fra andre razor pages.
     /// Fordi at i dette tilfælde kan static metode og ikke static kun kommunikere ved hjælp af delegate.
-    /// Kommunikere med "NavMenuChangeInPage"
-    ///
+    /// Kommunikere med "NavMenuChangeInPage".
     /// </summary>
     private static Action<NavigateMenus> navMenuChangeEvent;
 
