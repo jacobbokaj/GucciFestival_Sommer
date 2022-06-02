@@ -24,6 +24,7 @@ namespace GucciFestival.Server.Models
             //    Console.WriteLine(item.Name);
             //    Console.WriteLine("taken_id" + item.Shift_Taken_Id);
             //}
+           
             return db.Shifts;
         }
         public void AddShift(Shift shift)

@@ -1,5 +1,6 @@
 ﻿using GucciFestival.Server.Models;
 using GucciFestival.Server.Services;
+using GucciFestival.Shared.Competences;
 using GucciFestival.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,11 @@ namespace GucciFestival.Server.Controllers
         [HttpPost]
         public void AddUser(User user)
         {
+
+
+            
+
+
             repository.AddUser(user);
         }
         [HttpPut]
