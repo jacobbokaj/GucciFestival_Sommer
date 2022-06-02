@@ -5,10 +5,15 @@ namespace GucciFestival.Server.Models
 {
     public class ShiftRepository : IShiftRepository
     {
-        PgAdminDBContext db = new  PgAdminDBContext();
+        private PgAdminDBContext db = null;
+        
+        public ShiftRepository(IConfiguration iconfig)
+        {
+            db = new PgAdminDBContext(iconfig);
+        }
         public List<Shift> GetAllShifts()
         {
-            db.GetAllShifts("SELECT name, start_time, end_time, description, competence_id, shift_id, shift_taken_id FROM shift");
+            db.GetAllShifts("SELECT name, start_time, end_time, competence_id, shift_id, shift_taken_id FROM shift");
             // List<Shift> shifts = new List<Shift>();
             //shifts.Add(new Shift());
             //shifts.Add(new Shift());
@@ -24,12 +29,12 @@ namespace GucciFestival.Server.Models
             //    Console.WriteLine(item.Name);
             //    Console.WriteLine("taken_id" + item.Shift_Taken_Id);
             //}
-           
+            
             return db.Shifts;
         }
         public void AddShift(Shift shift)
         {
-            var sql = $"INSERT INTO shift VALUES('{shift.Name}','{shift.Description}',{shift.Competence_Id}, {shift.Shift_Id}," +
+            var sql = $"INSERT INTO shift VALUES('{shift.Name}',{shift.Competence_Id}, {shift.Shift_Id}," +
               $"{shift.Shift_Taken_Id},'{shift.Start_Date.ToString("MM-dd-yyyy")}','{shift.End_Date.ToString("MM-dd-yyyy")}')";
             Console.WriteLine("Add shift sql: " + sql);
             db.CUD(sql);
@@ -37,7 +42,6 @@ namespace GucciFestival.Server.Models
 
         public bool DeleteShift(int id)
         {
-            Console.WriteLine("Delete shift need to be inplemented!");
             //foreach (var shift in db.Shifts)
             //{
             //    if (shift.Shift_Id == id)

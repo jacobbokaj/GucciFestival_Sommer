@@ -10,7 +10,7 @@ namespace GucciFestival.Server.Controllers
     [Route("api/userapi")]
     public class UserController
     {
-        private readonly IUserRepository repository = new UserRepository();
+        private readonly IUserRepository repository = null;
         public UserController(IUserRepository repository)
         {
             if (repository != null)

@@ -6,8 +6,12 @@ namespace GucciFestival.Server.Models
 {
     public class UserRepository : IUserRepository
     {
-        PgAdminDBContext db = new PgAdminDBContext();
+        PgAdminDBContext db = null;
 
+        public UserRepository(IConfiguration Iconfig )
+        {
+            db = new PgAdminDBContext( Iconfig );
+        }
         public List<User> GetAllUsers()
         {
             db.GetAllUsers("SELECT name,birthday, email, phone, password, user_id, type_id, type  FROM \"User\";");
@@ -17,10 +21,10 @@ namespace GucciFestival.Server.Models
                 for (int j = 0; j < db.UserCompetences.Count; j++)
                     if(db.Users[i].User_id == db.UserCompetences[j].User_User_Id)
                     {
-                       db.Users[i].Competences.Add((Competences)(db.UserCompetences[j].Competence_Competence_Id - 1));
+                       db.Users[i].Competences_Id.Add(db.UserCompetences[j].Competence_Competence_Id - 1);
                    //     Console.WriteLine($"User Competence {db.Users[i].Name} Enum: {db.Users[i].Competences[0]} ");
                     }
-                Console.WriteLine($" user competence count: {db.Users[i].Competences.Count}");
+                Console.WriteLine($" user {db.Users[i].Name} competence count: {db.Users[i].Competences_Id.Count}");
             }
             //List<User> users = new List<User>();
             //users.Add(new User());
@@ -30,21 +34,25 @@ namespace GucciFestival.Server.Models
         }
         public void AddUser(User user)
         {
-            Console.WriteLine("Add user in server user");
-            db.CUD("call create_user5('Kennth','05-09-1991', 'Kennethgmai.com','12345678','password', '{1,2}')");
-           // string sql = $"CALL creat_user('{user.Name}','{user.Birthday}','{user.Email}','{user.Phone}','{user.Password}','{user.User_id}','{user.Type_id}','{user.Type}')";
-           // db.CUD(sql);
+            string sqlArray = "{";
+
+            for (int i = 0; i < user.Competences_Id.Count; i++)
+            {
+                sqlArray += $"{user.Competences_Id[i]}" + (i + 1 < user.Competences_Id.Count ? "," : "");
+            }
+            sqlArray += "}";
+
+
+
+            string sql = $"call create_user5('{user.Name}','{user.Birthday.ToString("MM-dd-yyyy")}', '{user.Email}','{user.Phone}','{user.Password}', '{sqlArray}')";
+
+
+            Console.WriteLine("Add user sql: " + sql);
+            db.CUD(sql);;
         }
 
         public bool UpdateUser(User user)
         {
-
-            List<User> users = new List<User>();
-            users = GetAllUsers();
-            foreach (var item in users)
-            {
-               
-            }
             string sql = $"UPDATE \"User\" " +
                 $"SET name= '{user.Name}', birthday = '{user.Birthday.ToString("MM-dd-yyyy")}', email = '{user.Email}', phone = {user.Phone}," +
                 $" password = '{user.Password}', User_id = {user.User_id} WHERE User_id = {user.User_id}";
@@ -56,8 +64,7 @@ namespace GucciFestival.Server.Models
 
         public bool DeleteUser(int user_id)
         {
-            string sql = $"DELETE FROM \"User\" WHERE User_id = {user_id}";
-            Console.WriteLine("DELETE USER implement needed");
+            string sql = $"call delete_user1({user_id})";
             db.CUD(sql);
             return true;
         }

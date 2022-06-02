@@ -9,7 +9,7 @@ namespace GucciFestival.Server.Controllers
     [Route("api/shiftapi")]
     public class ShiftController : ControllerBase
     {
-        private readonly IShiftRepository repository = new ShiftRepository();
+        private readonly IShiftRepository repository = null;
 
         public ShiftController(IShiftRepository shiftRepository)
         {

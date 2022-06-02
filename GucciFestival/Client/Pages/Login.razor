@@ -2,6 +2,7 @@
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
 @using GucciFestival.Shared.StartPage;
+@using GucciFestival.Shared.Competences;
 @using Nito.AsyncEx;
 @inject NavigationManager NavManager
 @using GucciFestival.Shared.NavigateMenus;
@@ -19,31 +20,31 @@
     case StartPage.Login:
     <h3>Log in </h3>
         <h4>@userLoginMessage</h4>
-    <EditForm EditContext=@editContextCreateUser 
-     OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
+    <EditForm Model=@loginModel
+     Context="formContext">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
         <div class="col-3 mb-4">
             <label for="Email">Email:</label>
-            <InputText id="Email" @bind-Value="userModel.Email" class="form-control" />
+            <InputText id="Email" @bind-Value="loginModel.Email" class="form-control" />
         </div>
 
         <div class="col-4 mb-4">
             <label for="Password">Password:</label>
-            <InputText id="Password" @bind-Value="userModel.Password" class="form-control"/>
+            <InputText id="Password" @bind-Value="loginModel.Password" class="form-control"/>
         </div>
 
         
 
 
-        <button type="submit" class="btn-outline-primary">Login</button>
+        <button type="submit" class="btn-outline-primary" @onclick=UserLogin>Login</button>
 
         </EditForm>
         break;
     case StartPage.CreateUser:
         <EditForm EditContext=@editContextCreateUser 
-         OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
+         OnValidSubmit=@LoginHandleValidSubmit OnInvalidSubmit=@LoginHandleInvalidSubmit>
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="col-3 mb-4">
@@ -70,9 +71,15 @@
             <InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control"/>
         </div>
         
-        <button type="submit" class="btn-outline-primary">Login</button>
+        <button class="btn-outline-primary" @onclick="UserAdd">Lav frivllig konto</button>
 
-        <button type="submit" class="btn-outline-primary">Change navmenu</button>
+        @foreach (var item in competenceCheckBoxes)
+       {
+           <li>
+               <label>@((Competences)item.CompetenceIndex)</label>
+               <InputCheckbox @bind-Value="item.HaveCompetenceFlag" />
+           </li>
+       }
 
         </EditForm>
         break;
@@ -83,6 +90,9 @@
 
     public StartPage startPage;
 
+    private Competences competence;
+    private List<CompetenceCheckBox> competenceCheckBoxes = new List<CompetenceCheckBox>();
+
 
     public static User UserLogedin { get; set; }
 
@@ -91,7 +101,7 @@
     private bool? sideOpret;
 
 
-
+    private LoginModel loginModel = new LoginModel();
 
     private UserModel userModel = new UserModel();
     //For opret
@@ -99,7 +109,7 @@
     private EditContext editContextCreateUser;
 
     //login
-    private EditContext editContextLogin;
+    private EditContext editLoginContext;
 
     private User userTarget = new User();
     //Useless
@@ -109,8 +119,15 @@
 
     protected override void OnInitialized()
     {
+        UserLogedin = null;
+
+        for (var i = 0; i < 7; i++)
+        {
+            competenceCheckBoxes.Add(new CompetenceCheckBox(i, false));
+        }
 
         editContextCreateUser = new EditContext(userModel);
+        editLoginContext = new EditContext(loginModel);
         userLoginMessage = string.Empty;
 
         users.Add(new User());
@@ -125,7 +142,7 @@
 
 
 
-    
+
 
 
 
@@ -180,8 +197,8 @@
         foreach (var userLooping in users)
         {
             Console.WriteLine("Email userloop: " + userLooping.Email + "Email usermodel: " + userModel.Email + " password userloop: " + userLooping.Password + " password usermodel " + userModel.Password);
-            if (userLooping.Email == userModel.Email &&
-                userLooping.Password == userModel.Password)
+            if (userLooping.Email == loginModel.Email &&
+                userLooping.Password == loginModel.Password)
             {
                 UserLogedin = userLooping;
                 break;
@@ -197,29 +214,41 @@
             else
             {
                 NavManager.NavigateTo("/coordinatorOwnPage");
-                
+
             }
         }
         userLoginMessage = userTarget != null ? "Found user" : "Not found user";
     }
 
 
-    public async Task UserAdd()
+    public void UserAdd()
     {
         Console.WriteLine("Start add user");
-        User user = new User(userModel.Name, userModel.Email,userModel.Birthday,
-                             userModel.Tlf,userModel.Password,/*Placeholder Comptence*/2,
-                                /*User_id*/7,1,"default");
-        await UserService.AddUser(user);
+
+        User userAdd = new User();
+        userAdd.Name = userModel.Name;
+        userAdd.Birthday = userModel.Birthday;
+        userAdd.Email = userModel.Email;
+        userAdd.Phone = userModel.Tlf;
+        userAdd.Password = userModel.Password;
+
+        foreach (var item in competenceCheckBoxes)
+        {
+            if (item.HaveCompetenceFlag)
+            {
+                userAdd.Competences_Id.Add(item.CompetenceIndex +1);
+            }
+        }
+        UserService.AddUser(userAdd);
     }
 
-    public void HandleValidSubmit()
+    public void LoginHandleValidSubmit()
     {
         Console.WriteLine("Hello handle Valid");
         UserLogin();
-       // ChangeSide();
+        // ChangeSide();
     }
-    public void HandleInvalidSubmit()
+    public void LoginHandleInvalidSubmit()
     {
         Console.WriteLine("Hello handle not valid");
     }

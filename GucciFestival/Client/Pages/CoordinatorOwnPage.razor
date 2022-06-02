@@ -7,20 +7,16 @@
 @inject NavigationManager NavManager
 
 
-<h3>CoordinatorOwnPage @Login.UserLogedin.Name</h3>
-@*<button @onclick=NavigateToSideProfil>Profil</button>
-<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsAvailable))">Vagter Ledige</button>
-<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.ShiftsTaken))">Vagter taget</button>
-<button @onclick="(() => SetShiftTarget(null,CoordinatorOwnPages.Volenteers))">Frivillige</button>*@
-
-<button @onclick="(() => NewNavMenu(NavigateMenus.Coordinator))">Nav menu test</button>
-<button @onclick=CreateUser>Add user</button>
-@if (shifts.Count == 0)
+@if (Login.UserLogedin == null)
 {
-
+    <h1>Ikke logget ind på en coordinator</h1>
+    NavMenu.ChangeSideFlag(NavigateMenus.MainSide);
 }
 else
 {
+    <h3>CoordinatorOwnPage @Login.UserLogedin.Name</h3>
+
+
     @switch (page)
     {
         case CoordinatorPages.ShiftCreate:
@@ -117,22 +113,25 @@ else
                 <thead>
                     <tr>
                         <th>FrivilligeNavn</th>
-                        <th>Kompetence</th>
                         <th>Fødselsdag</th>
                         <th>Tlf</th>
                         <th>Email</th>
+                        <th>Kompetence</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var forecast in volenteers)
                     {
-                        <tr>
-                            <td>@forecast.Name</td>
-                            <td>@forecast.Birthday</td>
-                            <td>@forecast.Phone</td>
-                            <td>@forecast.Email</td>
-                           @* <td>@((Competences)forecast.Competence_id)</td>*@
-                        </tr>
+                        if (VolenteerHaveCompetence(forecast,competences))
+                        {                   
+                            <tr>
+                                <td>@forecast.Name</td>
+                                <td>@forecast.Birthday</td>
+                                <td>@forecast.Phone</td>
+                                <td>@forecast.Email</td>
+                               <td>@competences</td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -150,8 +149,8 @@ else
                 <h3>Slut dato</h3>
                 <h3>@shiftTarget.End_Date</h3>
 
-                <h3>Description</h3>
-                <h3>@shiftTarget.Description</h3>
+                
+               
 
 
             </div>
@@ -278,7 +277,17 @@ else
         await VolenteerService.AddUser(volenteer);
     }
 
-
+    public bool VolenteerHaveCompetence(User vol, Competences comp)
+    {
+        foreach (var item in vol.Competences_Id)
+        {
+            if (item == (int)comp)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void SetShiftTarget(Shift shift, CoordinatorPages page)
     {
@@ -309,7 +318,7 @@ else
     private void ShiftModelInsetValues()
     {
         shiftModel.Name = shiftTarget.Name;
-        shiftModel.Description = shiftTarget.Description;
+       
         shiftModel.Competence_Id = shiftTarget.Competence_Id;
         shiftModel.Shift_Id = shiftTarget.Shift_Id;
         shiftModel.Shift_Taken_Id = shiftTarget.Shift_Taken_Id;
@@ -324,7 +333,7 @@ else
         Shift shiftAdd = new Shift();
         shiftAdd.Name = shiftModel.Name;
         Console.WriteLine("ShiftModel                      : "+shiftModel.Name);
-        shiftAdd.Description = "Default";
+       
         shiftAdd.Competence_Id = ((int)competences) + 1;
 
         int newShift_Id = 0;

@@ -17,7 +17,6 @@ namespace GucciFestival.Shared.Models
         public DateTime Start_Date { get; set; }
         public DateTime End_Date { get; set; }
 
-        public string Description { get; set; }
         public int Competence_Id { get; set; }
 
 

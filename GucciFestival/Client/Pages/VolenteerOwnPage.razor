@@ -4,15 +4,17 @@
 @using GucciFestival.Shared.Models
 @inject NavigationManager NavManager
 @using GucciFestival.Shared.VolenteerPages;
-<h3>Frivlliges Navn:@Login.UserLogedin.Name </h3>
-<button @onclick=NewNavMenu>Nav menu test</button>
+@*<button @onclick=NewNavMenu>Nav menu test</button>
 <button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsOwn))">Egen vagter</button>
-<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable))">Vagter ledige</button>
-@if(shifts.Count == 0){
+<button @onclick="(() => SetShiftTarget(null,VolenteerPages.ShiftsAvailable))">Vagter ledige</button>*@
+@if(Login.UserLogedin == null){
+    <h1>Ikke logget ind på en frivillige</h1>
 
 }
 else
 {
+    <h3>Frivlliges Navn:@Login.UserLogedin.Name </h3>
+
     @switch (volenteerPages)
     {
         case VolenteerPages.ShiftsAvailable:
@@ -52,7 +54,7 @@ else
                 <h3>@shiftTarget.End_Date</h3>
 
                 <h3>Description</h3>
-                <h3>@shiftTarget.Description</h3>
+               
                 
                 <h3>Sikker på at tage vagten?</h3>      
                 <input type="checkbox" @bind=shiftTakeCheckBoksFlag/>

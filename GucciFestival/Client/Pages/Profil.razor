@@ -1,12 +1,13 @@
 ﻿@using GucciFestival.Client.Models
 @using GucciFestival.Client.Services
+@using GucciFestival.Shared.Competences
 @using GucciFestival.Shared.Models
 @inject NavigationManager NavManager
 @page "/profil"
 <h3>Profil</h3>
 
 <EditForm EditContext=@editContext class="row p-3"
-OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
+Context="formContext">
 <DataAnnotationsValidator/>
 <ValidationSummary/>
 <div class="col-mb-4">
@@ -29,7 +30,16 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 	<label for="Birthday">Birthday:</label>
 	<InputDate id="Birthday" @bind-Value="userModelV2.Birthday" class="form-control"/>
 </div>
-<Button id="button1" @onsubmit=UserUpdate> Opdater profil</Button> 
+
+<div>
+	@foreach (var item in competenceCheckBoxes)
+   {
+	   <label>@((Competences)item.CompetenceIndex)</label>
+	   <InputCheckbox @bind-Value=item.HaveCompetenceFlag/>
+   }
+</div>
+
+<Button id="button1" type="submit" @onclick=UserUpdate> Opdater profil</Button>
 <Button id="button2" @onclick=UserDelete> Slet Profil</Button> 
 
 <style>
@@ -59,16 +69,28 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 	private UserModel userModel = new UserModel();
 	private User userModelV2 = new User();
 
+	private List<CompetenceCheckBox> competenceCheckBoxes = new List<CompetenceCheckBox>();
+
 	[Inject]
 	private IUserService UserService { get; set; }
 	protected override void OnInitialized()
 	{
 
 		userModelV2 = Login.UserLogedin;
-		userModel.Email = "se-b@live.dk";
-		userModel.Name = "Sebastian Søborg";
-		userModel.Password = "1234";
-		userModel.Tlf = 12345678;
+
+		for (var i = 0; i < 7; i++)
+		{
+			bool haveCompetenceFlag = false;
+			for (var y = 0; y < userModelV2.Competences_Id.Count; y++)
+			{
+				if (i == userModelV2.Competences_Id[y])
+				{
+					haveCompetenceFlag = true;
+				}
+			}
+			competenceCheckBoxes.Add(new CompetenceCheckBox(i,haveCompetenceFlag));
+		}
+
 
 		editContext = new EditContext(userModel);
 	}
@@ -86,6 +108,9 @@ OnValidSubmit=@HandleValidSubmit OnInvalidSubmit=@HandleInvalidSubmit>
 	}
 
 
-	public void HandleValidSubmit() {}
+	public void HandleValidSubmit()
+	{
+		
+	}
 	public void HandleInvalidSubmit() {}
 }
