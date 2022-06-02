@@ -53,10 +53,23 @@ namespace GucciFestival.Server.Models
 
         public bool UpdateUser(User user)
         {
-            string sql = $"UPDATE \"User\" " +
-                $"SET name= '{user.Name}', birthday = '{user.Birthday.ToString("MM-dd-yyyy")}', email = '{user.Email}', phone = {user.Phone}," +
-                $" password = '{user.Password}', User_id = {user.User_id} WHERE User_id = {user.User_id}";
-            
+            //string sql = $"UPDATE \"User\" " +
+            //    $"SET name= '{user.Name}', birthday = '{user.Birthday.ToString("MM-dd-yyyy")}', email = '{user.Email}', phone = {user.Phone}," +
+            //    $" password = '{user.Password}', User_id = {user.User_id} WHERE User_id = {user.User_id}";
+
+            string sqlArray = "{";
+
+            for (int i = 0; i < user.Competences_Id.Count; i++)
+            {
+                sqlArray += $"{user.Competences_Id[i]}" + (i + 1 < user.Competences_Id.Count ? "," : "");
+            }
+            sqlArray += "}";
+
+
+
+
+            string sql = $"call update_user1('{user.Name}','{user.Birthday.ToString("MM-dd-yyyy")}','{user.Email}',{user.Phone}," +
+                $"'{user.Password}',{user.User_id},'{sqlArray}')";
             Console.WriteLine("USER UPDATE SQL: "+ sql);
             db.CUD(sql);
             return true;

@@ -1,7 +1,7 @@
 ﻿@using GucciFestival.Client.Models
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Models
-@using GucciFestival.Shared.StartPage;
+@using GucciFestival.Shared.LoginPage;
 @using GucciFestival.Shared.Competences;
 @using Nito.AsyncEx;
 @inject NavigationManager NavManager
@@ -9,248 +9,196 @@
 @page "/login"
 @using GucciFestival.Shared;
 
-@switch (startPage)
+@switch (loginPage)
 {
-    case StartPage.MainPage:
+    case LoginPage.StartPage:
         <h3> Login in</h3>
-            <button @onclick="(()=>SetPage(StartPage.Login))" class="btn-outline-primary">log in</button>
-        <button @onclick="(()=>SetPage(StartPage.CreateUser))" class="btn-outline-primary">opret bruger</button>
-        
+        <button @onclick="(()=>SetLoginPage(LoginPage.Login))" class="btn-outline-primary">log in</button>
+        <button @onclick="(()=>SetLoginPage(LoginPage.AddUser))" class="btn-outline-primary">opret bruger</button>
+
         break;
-    case StartPage.Login:
-    <h3>Log in </h3>
+    case LoginPage.Login:
+        <h3>Log in </h3>
         <h4>@userLoginMessage</h4>
-    <EditForm Model=@loginModel
-     Context="formContext">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+        <EditForm Model=@loginModel
+          Context="formContext">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-        <div class="col-3 mb-4">
-            <label for="Email">Email:</label>
-            <InputText id="Email" @bind-Value="loginModel.Email" class="form-control" />
-        </div>
+            <div class="col-3 mb-4">
+                <label for="Email">Email:</label>
+                <InputText id="Email" @bind-Value="loginModel.Email" class="form-control" />
+            </div>
 
-        <div class="col-4 mb-4">
-            <label for="Password">Password:</label>
-            <InputText id="Password" @bind-Value="loginModel.Password" class="form-control"/>
-        </div>
+            <div class="col-4 mb-4">
+                <label for="Password">Password:</label>
+                <InputText id="Password" @bind-Value="loginModel.Password" class="form-control" />
+            </div>
 
-        
-
-
-        <button type="submit" class="btn-outline-primary" @onclick=UserLogin>Login</button>
-
-        <button class="btn-outline-primary" @onclick="(() => SetPage(StartPage.MainPage))">MainSide</button>
+            <button type="submit" class="btn-outline-primary" @onclick="@(() => UserLogin(formContext))">Login</button>
+            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPage.StartPage))">MainSide</button>
         </EditForm>
         break;
-    case StartPage.CreateUser:
-        <EditForm EditContext=@editContextCreateUser 
-         OnValidSubmit=@LoginHandleValidSubmit OnInvalidSubmit=@LoginHandleInvalidSubmit>
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="col-3 mb-4">
-	      <label for="Name">Name:</label>
-	      <InputText id="Name" @bind-Value="userModel.Name" class="form-control"/>
-        </div>
-        <div class="col-3 mb-4">
-            <label for="Email">Email:</label>
-            <InputText id="Email" @bind-Value="userModel.Email" class="form-control" />
-        </div>
+    case LoginPage.AddUser:
+        <EditForm EditContext=userAddContext OnValidSubmit=AddUserHandleValidSubmit>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="col-3 mb-4">
+                <label for="Name">Name:</label>
+                <InputText id="Name" @bind-Value="userAddModel.Name" class="form-control" />
+            </div>
+            <div class="col-3 mb-4">
+                <label for="Email">Email:</label>
+                <InputText id="Email" @bind-Value="userAddModel.Email" class="form-control" />
+            </div>
 
-        <div class="col-4 mb-4">
-            <label for="Password">Password:</label>
-            <InputText id="Password" @bind-Value="userModel.Password" class="form-control"/>
-        </div>
+            <div class="col-4 mb-4">
+                <label for="Password">Password:</label>
+                <InputText id="Password" @bind-Value="userAddModel.Password" class="form-control" />
+            </div>
 
-        
-        <div class="col-4 mb-4">
-            <label for="Tlf">Tlf:</label>
-            <InputNumber id="Tlf" @bind-Value="userModel.Tlf" class="form-control" />
-        </div>
-        <div class="col-4 mb-3">
-            <label for="Birthday">Birthday:</label>
-            <InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control"/>
-        </div>
-        
-        <button class="btn-outline-primary" @onclick="UserAdd">Lav frivllig konto</button>
-        <button class="btn-outline-primary" @onclick="(() => SetPage(StartPage.MainPage))">MainSide</button>
 
-        @foreach (var item in competenceCheckBoxes)
-       {
-           <li>
-               <label>@((Competences)item.CompetenceIndex)</label>
-               <InputCheckbox @bind-Value="item.HaveCompetenceFlag" />
-           </li>
-       }
+            <div class="col-4 mb-4">
+                <label for="Tlf">Tlf:</label>
+                <InputNumber id="Tlf" @bind-Value="userAddModel.Phone" class="form-control" />
+            </div>
+            <div class="col-4 mb-3">
+                <label for="Birthday">Birthday:</label>
+                <InputDate id="Birthday" @bind-Value="userAddModel.Birthday" class="form-control" />
+            </div>
 
+
+            @foreach (var item in competenceCheckBoxes)
+            {
+                <li>
+                    <label>@((Competences)item.CompetenceIndex)</label>
+                    <InputCheckbox @bind-Value="item.HaveCompetenceFlag" />
+                </li>
+            }
+
+            <button type="submit" class="btn-outline-primary">Lav frivllig konto</button>
+            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPage.StartPage))">MainSide</button>
         </EditForm>
         break;
 }
 
-    @*<button @onsubmit=@(async () => await UserAdd())>Add user</button>*@
 @code {
 
-    public StartPage startPage;
+    public LoginPage loginPage;
+
 
     private Competences competence;
     private List<CompetenceCheckBox> competenceCheckBoxes = new List<CompetenceCheckBox>();
 
-
+    /// <summary>
+    /// Hvem der er logget ind på hjemmesiden.
+    /// </summary>
     public static User UserLogedin { get; set; }
-
-
-    private List<User> users = new List<User>();
-    private bool? sideOpret;
-
-
     private LoginModel loginModel = new LoginModel();
-
-    private UserModel userModel = new UserModel();
-    //For opret
     private string userLoginMessage;
-    private EditContext editContextCreateUser;
 
-    //login
-    private EditContext editLoginContext;
 
-    private User userTarget = new User();
-    //Useless
+
+
+
+    //For opret user
+    private EditContext userAddContext;
+    private UserModel userAddModel = new UserModel();
+
     [Inject]
     public IUserService UserService { get; set; }
+    private List<User> users = new List<User>();
 
 
     protected override void OnInitialized()
     {
+        //Resetter den statics variable for at den ikke stadig har det samme login
+        //F.eks. hvis man går tilbage med browser tilbage knappen 
         UserLogedin = null;
 
+        userAddModel = new UserModel();
+        userAddContext = new EditContext(userAddModel);
+
+
+        //"Adder" alle competence der findes og sættes i en liste, der vises visuelt med checkbox og competences navn.
         for (var i = 0; i < 7; i++)
         {
             competenceCheckBoxes.Add(new CompetenceCheckBox(i, false));
         }
 
-        editContextCreateUser = new EditContext(userModel);
-        editLoginContext = new EditContext(loginModel);
-        userLoginMessage = string.Empty;
 
-        users.Add(new User());
-        users[0].Name = "Kimmi";
-        users[0].Email = "kimmmmii@h";
+        //Besked, hvis der ikke findes nogen "user" med det login.
+        userLoginMessage = string.Empty;
+        //Ændre  navigations knapper i venstre side, til "forsiden".
         NavMenu.NavMenuChange(NavigateMenus.MainSide);
     }
     protected override async Task OnInitializedAsync()
     {
-        users = (await UserService.GetAllUsers()).ToList();      
+        users = (await UserService.GetAllUsers()).ToList();
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void SetPage(StartPage startPage)
+    /// <summary>
+    /// Vise, hvilken udsende der skal vises på loginpage.
+    /// </summary>
+    /// <param name="startPage"></param>
+    public void SetLoginPage(LoginPage startPage)
     {
         NavMenu.NavMenuChange(NavigateMenus.MainSide);
-        this.startPage = startPage;
+        this.loginPage = startPage;
     }
 
 
-  
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Ikke tænk på det.
-
-
-
-
-    private void ChangeSide()
+    public void UserLogin(EditContext formContext)
     {
-        //NavMenu.ChangeSideFlag();
-    }
-
-    public void UserLogin()
-    {
-        userTarget = null;
-        Console.WriteLine("List User: " + users.Count);
-        foreach (var userLooping in users)
+        bool formIsValid = formContext.Validate();
+        if (formIsValid)
         {
-            Console.WriteLine("Email userloop: " + userLooping.Email + "Email usermodel: " + userModel.Email + " password userloop: " + userLooping.Password + " password usermodel " + userModel.Password);
-            if (userLooping.Email == loginModel.Email &&
-                userLooping.Password == loginModel.Password)
+            foreach (var userLooping in users)
             {
-                UserLogedin = userLooping;
-                break;
+                if (userLooping.Email == loginModel.Email && userLooping.Password == loginModel.Password)
+                {
+                    UserLogedin = userLooping;
+                    break;
+                }
             }
-        }
+            if (UserLogedin != null)
+            {        
+                if (UserLogedin.Type_id == 2)
+                {
+                    NavManager.NavigateTo("/volenteerOwnPage");
+                }
+                else
+                {
+                    NavManager.NavigateTo("/coordinatorOwnPage");
 
-        if(UserLogedin != null)
-        {
-            if(UserLogedin.Type_id == 2)
-            {
-                NavManager.NavigateTo("/volenteerOwnPage");
+                }
             }
             else
             {
-                NavManager.NavigateTo("/coordinatorOwnPage");
-
+                userLoginMessage = "Not found user";
             }
         }
-        userLoginMessage = userTarget != null ? "Found user" : "Not found user";
     }
-
-
-    public void UserAdd()
+    public void AddUserHandleValidSubmit()
     {
-        Console.WriteLine("Start add user");
-
+        Console.WriteLine("Hello handle Valid");
         User userAdd = new User();
-        userAdd.Name = userModel.Name;
-        userAdd.Birthday = userModel.Birthday;
-        userAdd.Email = userModel.Email;
-        userAdd.Phone = userModel.Tlf;
-        userAdd.Password = userModel.Password;
+        userAdd.Name = userAddModel.Name;
+        userAdd.Birthday = userAddModel.Birthday;
+        userAdd.Email = userAddModel.Email;
+        userAdd.Phone = userAddModel.Phone;
+        userAdd.Password = userAddModel.Password;
 
         foreach (var item in competenceCheckBoxes)
         {
             if (item.HaveCompetenceFlag)
             {
-                userAdd.Competences_Id.Add(item.CompetenceIndex +1);
+                userAdd.Competences_Id.Add(item.CompetenceIndex + 1);
             }
         }
+
         UserService.AddUser(userAdd);
     }
-
-    public void LoginHandleValidSubmit()
-    {
-        Console.WriteLine("Hello handle Valid");
-        UserLogin();
-        // ChangeSide();
-    }
-    public void LoginHandleInvalidSubmit()
-    {
-        Console.WriteLine("Hello handle not valid");
-    }
-
 }

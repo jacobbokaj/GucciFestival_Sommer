@@ -2,33 +2,34 @@
 @using GucciFestival.Client.Services
 @using GucciFestival.Shared.Competences
 @using GucciFestival.Shared.Models
+@using GucciFestival.Shared.NavigateMenus;
 @inject NavigationManager NavManager
 @page "/profil"
 <h3>Profil</h3>
 
-<EditForm EditContext=@editContext class="row p-3"
+<EditForm Model=@userModel class="row p-3"
 Context="formContext">
 <DataAnnotationsValidator/>
 <ValidationSummary/>
 <div class="col-mb-4">
 	<label for="Name">Name:</label>
-	<InputText id="Name" @bind-Value="userModelV2.Name" class="form-control"/>
+	<InputText id="Name" @bind-Value="userModel.Name" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Email">Email:</label>
-	<InputText id="Email" @bind-Value="userModelV2.Email" class="form-control"/>
+	<InputText id="Email" @bind-Value="userModel.Email" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Password">Password:</label>
-	<InputText id="Password" @bind-Value="userModelV2.Password" class="form-control"/>
+	<InputText id="Password" @bind-Value="userModel.Password" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Tlf">Tlf:</label>
-	<InputNumber id="Tlf" @bind-Value="userModelV2.Phone" class="form-control"/>
+	<InputNumber id="Tlf" @bind-Value="userModel.Phone" class="form-control"/>
 </div>
 <div class="col-mb-4">
 	<label for="Birthday">Birthday:</label>
-	<InputDate id="Birthday" @bind-Value="userModelV2.Birthday" class="form-control"/>
+	<InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control"/>
 </div>
 
 <div>
@@ -39,8 +40,8 @@ Context="formContext">
    }
 </div>
 
-<Button id="button1" type="submit" @onclick=UserUpdate> Opdater profil</Button>
-<Button id="button2" @onclick=UserDelete> Slet Profil</Button> 
+<Button id="button1" type="submit" @onclick="@(() => UserUpdate(formContext))"> Opdater profil</Button>
+<Button id="button2" @onclick="@(() => UserDelete(formContext))"> Slet Profil</Button> 
 
 <style>
 
@@ -65,9 +66,9 @@ Context="formContext">
 </style>
 </EditForm>
 @code {
-	private EditContext editContext;
+
+
 	private UserModel userModel = new UserModel();
-	private User userModelV2 = new User();
 
 	private List<CompetenceCheckBox> competenceCheckBoxes = new List<CompetenceCheckBox>();
 
@@ -76,14 +77,21 @@ Context="formContext">
 	protected override void OnInitialized()
 	{
 
-		userModelV2 = Login.UserLogedin;
+		userModel.Name = Login.UserLogedin.Name;
+		userModel.Email = Login.UserLogedin.Email;
+		userModel.Password = Login.UserLogedin.Password;
+		userModel.Phone = Login.UserLogedin.Phone;
+		userModel.Birthday = Login.UserLogedin.Birthday;
 
+
+
+		//Checker igennem, hvilken competencer user har og tætte "flueben" ved dem på den visuelle side.
 		for (var i = 0; i < 7; i++)
 		{
 			bool haveCompetenceFlag = false;
-			for (var y = 0; y < userModelV2.Competences_Id.Count; y++)
+			for (var y = 0; y < Login.UserLogedin.Competences_Id.Count; y++)
 			{
-				if (i == userModelV2.Competences_Id[y])
+				if (i == Login.UserLogedin.Competences_Id[y])
 				{
 					haveCompetenceFlag = true;
 				}
@@ -92,25 +100,40 @@ Context="formContext">
 		}
 
 
-		editContext = new EditContext(userModel);
 	}
 
-	private void UserDelete(){
-		UserService.DeleteUser(userModelV2);
+	private void UserDelete(EditContext formContext){
+		bool formIsValid = formContext.Validate();
 
-		Login.UserLogedin = null;
-		NavManager.NavigateTo("/login");
-		NavMenu.NavMenuChange(GucciFestival.Shared.NavigateMenus.NavigateMenus.MainSide);
+		if (formIsValid)
+		{		
+			User userDelete = Login.UserLogedin;
+
+			UserService.DeleteUser(userDelete);
+
+			//Det hele bliver reset og går ud på forsiden på hjemmesiden.
+			Login.UserLogedin = null;
+			NavManager.NavigateTo("/login");
+			NavMenu.NavMenuChange(NavigateMenus.MainSide);
+		}
+
 	}
-	private void UserUpdate()
+	private void UserUpdate(EditContext formContext)
 	{
-		UserService.UpdateUser(userModelV2);
+		bool formIsValid = formContext.Validate();
+		if (formIsValid)
+		{
+			User userUpdate = Login.UserLogedin;
+			//Clear alle competencer, så hvis nogle competence checkbox er fjernet, fjernes competence også i databasen.
+			userUpdate.Competences_Id.Clear();
+			foreach (var item in competenceCheckBoxes)
+			{
+				if (item.HaveCompetenceFlag)
+				{
+					userUpdate.Competences_Id.Add(item.CompetenceIndex);			
+				}
+			}
+			UserService.UpdateUser(userUpdate);		
+		}
 	}
-
-
-	public void HandleValidSubmit()
-	{
-		
-	}
-	public void HandleInvalidSubmit() {}
 }

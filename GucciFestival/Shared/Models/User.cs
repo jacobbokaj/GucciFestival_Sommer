@@ -10,11 +10,11 @@ namespace GucciFestival.Shared.Models
     public class User
     {
         public string? Name { get; set; }
-        public DateTime Birthday { get; set; }
         public string? Email { get; set; }
-        public int? Phone { get;  set; }
-
         public string? Password { get; set; }
+        public int Phone { get;  set; }
+
+        public DateTime Birthday { get; set; }
         //public int? Competence_id;
         public int User_id { get; set; }
         public int? Type_id { get; set; }
@@ -34,19 +34,7 @@ namespace GucciFestival.Shared.Models
 
         //    CoordinatorFlag = coordinatorFlag;
         //}
-        public User(string name, string email,DateTime birthday, int phone, string password, int competence_id, int user_id, int type_id, string type)
-        {
-            Name = name;
-
-            Email = email;
-            Phone = phone;
-            Password = password;
-         //   Competence_id = competence_id;
-            User_id = user_id;
-            Type_id = type_id;
-            Type = type;
-            Birthday = birthday;
-        }
+     
         public User()
         {
 

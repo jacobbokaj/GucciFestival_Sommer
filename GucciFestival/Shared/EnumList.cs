@@ -63,13 +63,13 @@ namespace GucciFestival.Shared
             Perform
         }
     }
-    namespace StartPage
+    namespace LoginPage
     {
-        public enum StartPage
+        public enum LoginPage
         {
-            MainPage,
+            StartPage,
             Login,
-            CreateUser,
+            AddUser,
         }
     }
 }

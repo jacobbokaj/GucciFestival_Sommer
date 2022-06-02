@@ -8,7 +8,7 @@ namespace GucciFestival.Server.Services
 
         void AddUser(User user);
 
-        bool UpdateUser(User shift);
+        bool UpdateUser(User user);
         bool DeleteUser(int user_id);
     }
 }
