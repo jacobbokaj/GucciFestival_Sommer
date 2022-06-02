@@ -10,7 +10,7 @@
 @if (Login.UserLogedin == null)
 {
     <h1>Ikke logget ind på en coordinator</h1>
-    NavMenu.ChangeSideFlag(NavigateMenus.MainSide);
+    NavMenu.NavMenuChange(NavigateMenus.MainSide);
 }
 else
 {
@@ -268,7 +268,7 @@ else
     protected override void OnInitialized()
     {
         pagesEvent = PageChange;
-        NavMenu.ChangeSideFlag(NavigateMenus.Coordinator);
+        NavMenu.NavMenuChange(NavigateMenus.Coordinator);
 
     }
 
@@ -399,7 +399,7 @@ else
     private void NewNavMenu(NavigateMenus navigateMenu)
     {
 
-        NavMenu.ChangeSideFlag(navigateMenu);
+        NavMenu.NavMenuChange(navigateMenu);
         StateHasChanged();
     }
     private void NavigateToSideProfil()
@@ -407,7 +407,7 @@ else
         NavManager.NavigateTo("/profil");
     }
 
-    public static void ButtonPage(CoordinatorPages pages)
+    public static void NavigateToVolenteerPage(CoordinatorPages pages)
     {
         pagesEvent?.Invoke(pages);
     }

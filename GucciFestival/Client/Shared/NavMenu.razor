@@ -25,9 +25,6 @@
                 </div>
 
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="fetchdata">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-                    </NavLink>
                     <NavLink class="nav-link" href="login">
                         <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
                     </NavLink>
@@ -75,12 +72,12 @@
                     <NavLink class="nav-link" href="profil">
                         <span class="oi oi-home" aria-hidden="true"></span> Profil
                     </NavLink>
-                    <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsOwn,1))">
+                    <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsOwn))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Min vagtplan
                     </button>
 
                     <div class="nav-item px-3">
-                        <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsAvailable,1))">
+                        <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsAvailable))">
                             <span class="oi oi-list-rich" aria-hidden="true"></span> Ledige vagter
                         </button>
                     </div>
@@ -100,6 +97,12 @@
     private NavigateMenus navigateMenu;
 
 
+    /// <summary>
+    /// Delegate, gør det muligt at kunne ændre navigations knapper i venstre side fra andre razor pages.
+    /// Fordi at i dette tilfælde kan static metode og ikke static kun kommunikere ved hjælp af delegate.
+    /// Kommunikere med "NavMenuChangeInPage"
+    ///
+    /// </summary>
     private static Action<NavigateMenus> navMenuChangeEvent;
 
     private static int volenteerIndex;
@@ -107,8 +110,8 @@
 
     protected override void OnInitialized()
     {
-        Console.WriteLine("Navmenu Load");
-        navMenuChangeEvent = NewNavMenu;
+
+        navMenuChangeEvent = NavMenuChangeInPage;
     }
 
     private void ToggleNavMenu()
@@ -116,37 +119,50 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    public static void ChangeSideFlag(NavigateMenus navigateMenu)
+    /// <summary>
+    /// Denne static metode, som de andre razor pages kalder på. for at kunne ændre navigations knapper i ventre side
+    /// Kommunikere med "NavMenuChangeInPage" og "NavMenuCHangeInPage".
+    /// </summary>
+    /// <param name="navigateMenu"></param>
+    public static void NavMenuChange(NavigateMenus navigateMenu)
     {
+        //Invoker betyder alt alle der er subscribede til "navMenuCHangeEvent" delegate, bliver "kaldt på" med paramenteren "navigateMenu"
+        //Den har kun en subsriber, fordi den bliver "=" i OnInitialized metoden.
         navMenuChangeEvent?.Invoke(navigateMenu);
 
     }
 
-    private static void VolenteerPage(VolenteerPages volenteerPage, int index)
-    {
-        volenteerIndex = index;
-        VolenteerOwnPage.ButtonVolenteerPage(volenteerPage, index);
-    }
-    private static void CoordinatorPage(CoordinatorPages coordinatorPage)
-    {
-        CoordinatorOwnPage.ButtonPage(coordinatorPage);
-    }
-    private void NewNavMenu(NavigateMenus navigateMenu)
+
+    /// <summary>
+    /// Dette er subsribeeren til "navMenuChangeEvent".
+    /// Denne er en "ikke static", som gør det muligt at kunne kalde på "navigateMenu" og "StateHasChanged".
+    /// Denne metode gør at navigations knapper i venstre side kan ændres imens programmet køre.
+    /// </summary>
+    /// <param name="navigateMenu"></param>
+    private void NavMenuChangeInPage(NavigateMenus navigateMenu)
     {
         this.navigateMenu = navigateMenu;
-        //switch (this.navigateMenu)
-        //{
-        //    case NavigateMenus.MainSide:
-        //        this.navigateMenu = NavigateMenus.Coordinator;
-        //        break;
-        //    case NavigateMenus.Coordinator:
-        //        this.navigateMenu = NavigateMenus.Volenteer;
-        //        break;
-        //    case NavigateMenus.Volenteer:
-        //        this.navigateMenu = NavigateMenus.MainSide;
-        //        break;
-        //}
-        Console.WriteLine("Nav enum: " + this.navigateMenu);
         StateHasChanged();
+    }
+
+
+    /// <summary>
+    /// For at kunne ændre side udsende på VolenteerPage ved hjælp af navigations knapper i venstre side.
+    /// </summary>
+    /// <param name="volenteerPage"></param>
+    /// <param name="index"></param>
+    private static void VolenteerPage(VolenteerPages volenteerPage)
+    {
+
+        VolenteerOwnPage.NavigateToVolenteerPage(volenteerPage);
+    }
+    /// <summary>
+    /// For at kunne ændre side udsende på CoordinatorPage ved hjælp af navigations knapper i venstre side.
+    /// </summary>
+    /// <param name="volenteerPage"></param>
+    /// <param name="index"></param>
+    private static void CoordinatorPage(CoordinatorPages coordinatorPage)
+    {
+        CoordinatorOwnPage.NavigateToVolenteerPage(coordinatorPage);
     }
 }

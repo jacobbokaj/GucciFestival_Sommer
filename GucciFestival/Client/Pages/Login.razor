@@ -40,6 +40,7 @@
 
         <button type="submit" class="btn-outline-primary" @onclick=UserLogin>Login</button>
 
+        <button class="btn-outline-primary" @onclick="(() => SetPage(StartPage.MainPage))">MainSide</button>
         </EditForm>
         break;
     case StartPage.CreateUser:
@@ -72,6 +73,7 @@
         </div>
         
         <button class="btn-outline-primary" @onclick="UserAdd">Lav frivllig konto</button>
+        <button class="btn-outline-primary" @onclick="(() => SetPage(StartPage.MainPage))">MainSide</button>
 
         @foreach (var item in competenceCheckBoxes)
        {
@@ -133,7 +135,7 @@
         users.Add(new User());
         users[0].Name = "Kimmi";
         users[0].Email = "kimmmmii@h";
-        NavMenu.ChangeSideFlag(NavigateMenus.MainSide);
+        NavMenu.NavMenuChange(NavigateMenus.MainSide);
     }
     protected override async Task OnInitializedAsync()
     {
@@ -156,14 +158,12 @@
 
     public void SetPage(StartPage startPage)
     {
-        NavMenu.ChangeSideFlag(NavigateMenus.MainSide);
+        NavMenu.NavMenuChange(NavigateMenus.MainSide);
         this.startPage = startPage;
     }
 
 
-
-
-
+  
 
 
 
@@ -252,4 +252,5 @@
     {
         Console.WriteLine("Hello handle not valid");
     }
+
 }

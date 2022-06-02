@@ -116,7 +116,7 @@ else
 
 
 
-    private static Action<VolenteerPages,int> volenteerPagesEvent;
+    private static Action<VolenteerPages> volenteerPagesEvent;
 
 
 
@@ -141,7 +141,7 @@ else
 
     private void NewNavMenu()
     {
-        NavMenu.ChangeSideFlag(GucciFestival.Shared.NavigateMenus.NavigateMenus.Volenteer);
+        NavMenu.NavMenuChange(GucciFestival.Shared.NavigateMenus.NavigateMenus.Volenteer);
     }
 
     /// <summary>
@@ -202,12 +202,12 @@ else
         NavManager.NavigateTo("/profil");
     }
 
-    public static void ButtonVolenteerPage(VolenteerPages page, int index)
+    public static void NavigateToVolenteerPage(VolenteerPages page)
     {
 
-        volenteerPagesEvent?.Invoke(page,index);
+        volenteerPagesEvent?.Invoke(page);
     }
-    private void PageChange(VolenteerPages page,int index)
+    private void PageChange(VolenteerPages page)
     {
         if (NavManager.Uri != (NavManager.BaseUri.ToString() + "volenteerOwnPage"))
         {
