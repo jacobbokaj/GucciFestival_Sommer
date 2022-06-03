@@ -26,6 +26,7 @@ namespace GucciFestival.Server.Models
         {
             var sql = $"INSERT INTO shift VALUES('{shift.Name}',{shift.Competence_Id}, {shift.Shift_Id}," +
               $"{shift.Shift_Taken_Id},'{shift.Start_Time.ToString("MM-dd-yyyy")}','{shift.End_Time.ToString("MM-dd-yyyy")}')";
+            Console.WriteLine(sql);
             db.CUD(sql);
         }
 

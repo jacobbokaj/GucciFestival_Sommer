@@ -7,8 +7,8 @@ namespace GucciFestival.Client.EditformModels
         [Required]
         public string Name { get; set; }
         [Required]
-        public DateTime Start_Date { get; set; } = DateTime.Now;
+        public DateTime Start_Time { get; set; } = DateTime.Now;
         [Required]
-        public DateTime End_Date { get; set; } = DateTime.Now;
+        public DateTime End_Time { get; set; } = DateTime.Now;
     }
 }

@@ -30,12 +30,12 @@ else
 
                 <div class="col-md-6 mb-3">
                     <label for="StartData">Start dato</label>
-                    <InputDate @bind-Value=shiftModel.Start_Date/>
+                    <InputDate @bind-Value=shiftModel.Start_Time/>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="EndDate">Slut dato</label>
-                    <InputDate @bind-Value=shiftModel.End_Date/>
+                    <InputDate @bind-Value=shiftModel.End_Time/>
                 </div>
                     <InputSelect id="Competence" @bind-Value="competences">
                         @foreach (var item in competenceArray)
@@ -66,8 +66,11 @@ else
                         {                       
                             <tr>
                                 <td>@forecast.Name</td>
-                                <td>@((Competences)(forecast.Competence_Id -1))</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
+                                <td>@((Competences)(forecast.Competence_Id))</td>
+                                <td>@forecast.Start_Time</td>
+                                <td>@forecast.End_Time</td>
+                                <td>@((Competences)(forecast.Competence_Id))</td>
+                                <button  @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                             </tr>
                         }
                     }
@@ -93,7 +96,10 @@ else
                         {                      
                             <tr>
                                 <td>@forecast.Name</td>
-                                <td>@((Competences)(forecast.Competence_Id-1))</td>
+                                <td>@GetVolenteerName(forecast.Shift_Taken_Id)</td>
+                                <td>@((Competences)(forecast.Competence_Id))</td>
+                                <td>@forecast.Start_Time</td>
+                                <td>@forecast.End_Time</td>
                                 <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                             </tr>
                         }
@@ -170,12 +176,12 @@ else
 
                 <div class="col-md-6 mb-3">
                     <label for="StartData">Start dato</label>
-                    <InputDate @bind-Value=shiftModel.Start_Date/>
+                    <InputDate @bind-Value=shiftModel.Start_Time/>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-3 mb-4">
                     <label for="EndDate">Slut dato</label>
-                    <InputDate @bind-Value=shiftModel.End_Date/>
+                    <InputDate @bind-Value=shiftModel.End_Time/>
                 </div>
                     <InputSelect id="Competence" @bind-Value="competences">
                         @foreach (var item in competenceArray)
@@ -274,6 +280,20 @@ else
         await VolenteerService.AddUser(volenteer);
     }
 
+
+    public string GetVolenteerName(int shift_taken_id)
+    {
+        for (var i = 0; i < volenteers.Count; i++)
+        {
+            if (shift_taken_id == volenteers[i].User_id)
+            {
+                return volenteers[i].Name;
+            }
+        }
+        return "default";
+    }
+
+
     public bool VolenteerHaveCompetence(User vol, Competences comp)
     {
         foreach (var item in vol.Competences_Id)
@@ -322,8 +342,8 @@ else
     private void ShiftModelInsetValues()
     {
         shiftModel.Name = shiftTarget.Name;    
-        shiftModel.Start_Date = shiftTarget.Start_Time;
-        shiftModel.End_Date = shiftTarget.End_Time;
+        shiftModel.Start_Time = shiftTarget.Start_Time;
+        shiftModel.End_Time = shiftTarget.End_Time;
         competences = (Competences)shiftTarget.Competence_Id;
     }
 
@@ -352,8 +372,8 @@ else
             shiftAdd.Shift_Id = newShift_Id + 1;
             //-1 står for at vagten ikke er taget.
             shiftAdd.Shift_Taken_Id = -1;
-            shiftAdd.Start_Time = shiftModel.Start_Date;
-            shiftAdd.End_Time = shiftModel.End_Date;
+            shiftAdd.Start_Time = shiftModel.Start_Time;
+            shiftAdd.End_Time = shiftModel.End_Time;
 
             ShiftService.AddShift(shiftAdd);
         }
@@ -367,8 +387,8 @@ else
 
             shift_update = shiftTarget;
             shift_update.Name = shiftModel.Name;
-            shift_update.Start_Time = shiftModel.Start_Date;
-            shift_update.End_Time = shiftModel.End_Date;
+            shift_update.Start_Time = shiftModel.Start_Time;
+            shift_update.End_Time = shiftModel.End_Time;
             //+1 fordi pgadmin/sql tabeller starter fra 1 og C#/ denne applikation starter det fra 0.
             shift_update.Competence_Id = (int)competences + 1;
 

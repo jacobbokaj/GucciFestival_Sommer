@@ -6,6 +6,7 @@
 @using Nito.AsyncEx;
 @inject NavigationManager NavManager
 @using GucciFestival.Shared.NavigateMenus;
+@page "/"
 @page "/login"
 @using GucciFestival.Shared;
 
@@ -27,6 +28,7 @@
 
             <div class="col-3 mb-4">
                 <label for="Email">Email:</label>
+
                 <InputText id="Email" @bind-Value="loginModel.Email" class="form-control" />
             </div>
 

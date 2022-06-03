@@ -3,6 +3,8 @@
 @using GucciFestival.Shared.VolenteerPages;
 @using GucciFestival.Shared.CoordinatorPages;
 
+
+
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">GucciFestival</a>
@@ -11,8 +13,6 @@
         </button>
     </div>
 </div>
-
-
 @switch (navigateMenu)
 {
     case NavigateMenus.MainSide:
@@ -20,15 +20,13 @@
             <nav class="flex-column">
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Home
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="login">
                         <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
                     </NavLink>
-
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="index">
+                        <span class="oi oi-home" aria-hidden="true"></span> Om projektet
+                    </NavLink>
                 </div>
             </nav>
         </div>
