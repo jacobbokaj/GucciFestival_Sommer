@@ -12,41 +12,52 @@
 else
 {
     <h3>Profil</h3>
-    <EditForm Model=@userModel class="row p-3"
+    <EditForm Model=@userModel
           Context="formContext">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <div class="col-mb-4">
-            <label for="Name">Name:</label>
-            <InputText id="Name" @bind-Value="userModel.Name" class="form-control" />
-        </div>
-        <div class="col-mb-4">
-            <label for="Email">Email:</label>
-            <InputText id="Email" @bind-Value="userModel.Email" class="form-control" />
-        </div>
-        <div class="col-mb-4">
-            <label for="Password">Password:</label>
-            <InputText id="Password" @bind-Value="userModel.Password" class="form-control" />
-        </div>
-        <div class="col-mb-4">
-            <label for="Tlf">Tlf:</label>
-            <InputNumber id="Tlf" @bind-Value="userModel.Phone" class="form-control" />
-        </div>
-        <div class="col-mb-4">
-            <label for="Birthday">Birthday:</label>
-            <InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control" />
-        </div>
 
-        <div>
-            @foreach (var item in competenceCheckBoxes)
-            {
+        <div class="row">
+
+            <div class="col-md-4">
+                <label for="Name">Name:</label>
+                <InputText id="Name" @bind-Value="userModel.Name" class="form-control" />
+                @*  <div class="col-mb-4">*@
+                <label for="Email">Email:</label>
+                <InputText id="Email" @bind-Value="userModel.Email" class="form-control" />
+                @*</div>*@
+                @*<div class="col-mb-4">*@
+                <label for="Password">Password:</label>
+                <InputText id="Password" @bind-Value="userModel.Password" class="form-control" />
+                @*</div>*@
+                @*<div class="col-mb-4">*@
+                <label for="Tlf">Tlf:</label>
+                <InputNumber id="Tlf" @bind-Value="userModel.Phone" class="form-control" />
+                @* </div>*@
+                @*<div class="col-mb-4">*@
+                <label for="Birthday">Birthday:</label>
+                <InputDate id="Birthday" @bind-Value="userModel.Birthday" class="form-control" />
+                @*</div>*@
+            </div>
+
+            <div class="col-md-4">
+                @foreach (var item in competenceCheckBoxes)
+                {
+                    <br>
+            <li>
+
+
                 <label>@((Competences)item.CompetenceIndex)</label>
                 <InputCheckbox @bind-Value=item.HaveCompetenceFlag />
-            }
-        </div>
+            </li>
+                }
 
-        <Button id="button1" type="submit" @onclick="@(() => UserUpdate(formContext))"> Opdater profil</Button>
-        <Button id="button2" type="submit" @onclick="@(() => UserDelete(formContext))"> Slet Profil</Button>
+          </div>
+        </div>
+        <Button type="submit" class="btn btn-primary" @onclick="@(() => UserUpdate(formContext))"> Opdater profil</Button>
+        <Button type="submit" class="btn btn-danger" @onclick="@(() => UserDelete(formContext))"> Slet Profil</Button>
+        <br>
+        <h3>@userUpdateMessage</h3>
 
     </EditForm>
 }
@@ -57,11 +68,13 @@ else
 
     private List<CompetenceCheckBox> competenceCheckBoxes = new List<CompetenceCheckBox>();
 
+    private string userUpdateMessage;
     [Inject]
     private IUserService UserService { get; set; }
     protected override void OnInitialized()
     {
-        if(Login.UserLogedin != null)
+        userUpdateMessage = string.Empty;
+        if (Login.UserLogedin != null)
         {
 
             userModel.Name = Login.UserLogedin.Name;
@@ -72,22 +85,20 @@ else
 
 
 
-        //Checker igennem, hvilken competencer user har og tætte "flueben" ved dem på den visuelle side.
-        for (var i = 0; i < 7; i++)
-        {
-            bool haveCompetenceFlag = false;
-            for (var y = 0; y < Login.UserLogedin.Competences_Id.Count; y++)
+            //Checker igennem, hvilken competencer user har og tætte "flueben" ved dem på den visuelle side.
+            for (var i = 0; i < 7; i++)
             {
-                if (i == Login.UserLogedin.Competences_Id[y])
+                bool haveCompetenceFlag = false;
+                for (var y = 0; y < Login.UserLogedin.Competences_Id.Count; y++)
                 {
-                    haveCompetenceFlag = true;
+                    if (i == Login.UserLogedin.Competences_Id[y])
+                    {
+                        haveCompetenceFlag = true;
+                    }
                 }
+                competenceCheckBoxes.Add(new CompetenceCheckBox(i, haveCompetenceFlag));
             }
-            competenceCheckBoxes.Add(new CompetenceCheckBox(i, haveCompetenceFlag));
         }
-        }
-
-
     }
 
     private void UserDelete(EditContext formContext)
@@ -104,6 +115,8 @@ else
             Login.UserLogedin = null;
             NavManager.NavigateTo("/login");
             NavMenu.NavMenuChange(NavigateMenus.MainSide);
+
+            userUpdateMessage = "Frivillig er slettet";
         }
 
     }
@@ -125,6 +138,7 @@ else
             }
             UserService.UpdateUser(userUpdate);
             Login.UserLogedin = userUpdate;
+            userUpdateMessage = "Profil opdateret";
         }
     }
 }

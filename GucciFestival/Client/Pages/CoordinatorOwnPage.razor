@@ -14,38 +14,40 @@
 }
 else
 {
-    <h3>CoordinatorOwnPage @Login.UserLogedin.Name</h3>
-
+    <h3> Din bruger:  <small>@Login.UserLogedin.Name </small></h3>
+    <br>
 
     @switch (coordinatorPage)
     {
         case CoordinatorPages.ShiftAdd:
-            <EditForm Model=@shiftModel Context="formContext" class="row p-3">
+            <EditForm Model=@shiftModel Context="formContext">
                 <DataAnnotationsValidator/>
                 <ValidationSummary/>
-                <div class="col-md-12 mb-3">
-                <label for="Name">Name</label>
+                <div class="row">
+                <div class="col-md-5">
+                <label for="Name">Navn</label>
                 <InputText id="Name" @bind-Value="shiftModel.Name" class="form-control"/>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="StartData">Start dato</label>
+                <br>
+                    <label for="StartData">Vagt starter: </label>
                     <InputDate @bind-Value=shiftModel.Start_Time/>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="EndDate">Slut dato</label>
+                <br>
+                <br/>
+                    <label for="EndDate">Vagt slutter: </label>
                     <InputDate @bind-Value=shiftModel.End_Time/>
-                </div>
-                    <InputSelect id="Competence" @bind-Value="competences">
+                <br>
+                <br>
+                    <InputSelect class="btn-outline-primary" id="Competence" @bind-Value="competences">
                         @foreach (var item in competenceArray)
                        {
                            <option>@item</option>
                        }
                     </InputSelect>
-                <div>          
-                    <button @onclick="(() =>ShiftAdd(formContext))">Tilføj vagt</button>
+                
+                </div>    
                 </div>
+                <br>
+                    <button class="btn btn-primary" @onclick="(() =>ShiftAdd(formContext))">Tilføj vagt</button>
+                
             </EditForm>
             break;
         case CoordinatorPages.ShiftsAvailable:
@@ -69,8 +71,7 @@ else
                                 <td>@((Competences)(forecast.Competence_Id))</td>
                                 <td>@forecast.Start_Time</td>
                                 <td>@forecast.End_Time</td>
-                                <td>@((Competences)(forecast.Competence_Id))</td>
-                                <button  @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
+                                <button class="btn btn-primary" @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                             </tr>
                         }
                     }
@@ -100,7 +101,7 @@ else
                                 <td>@((Competences)(forecast.Competence_Id))</td>
                                 <td>@forecast.Start_Time</td>
                                 <td>@forecast.End_Time</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
+                                <button class="btn btn-primary" @onclick="(() => SetShiftTarget(forecast,CoordinatorPages.ShiftRead))">Se vagt</button>
                             </tr>
                         }
                     }
@@ -111,7 +112,7 @@ else
 
             <EditForm Model=@volenteer>
                  
-                    <InputSelect id="Competence" @bind-Value="competences">
+                    <InputSelect class="btn btn-primary" id="Competence" @bind-Value="competences">
                         @foreach (var item in competenceArray)
                        {
                            <option>@item</option>
@@ -166,41 +167,44 @@ else
             </div>
             break;
         case CoordinatorPages.ShiftRead:
-            <EditForm Model=@shiftModel Context="formContext" class="row p-3">
+            <EditForm Model=@shiftModel Context="formContext">
                 <DataAnnotationsValidator/>
                 <ValidationSummary/>
-                <div class="col-md-12 mb-3">
+                <div class="row">
+                <div class="col-md-5">
                 <label for="Name">Name</label>
                 <InputText id="Name" @bind-Value="shiftModel.Name" class="form-control"/>
-                </div>
+                <br>
 
-                <div class="col-md-6 mb-3">
                     <label for="StartData">Start dato</label>
                     <InputDate @bind-Value=shiftModel.Start_Time/>
-                </div>
-
-                <div class="col-3 mb-4">
+                <br>
+                <br>
                     <label for="EndDate">Slut dato</label>
                     <InputDate @bind-Value=shiftModel.End_Time/>
-                </div>
-                    <InputSelect id="Competence" @bind-Value="competences">
+                <br>
+                <br>
+                    <InputSelect class="btn-outline-primary" id="Competence" @bind-Value="competences">
                         @foreach (var item in competenceArray)
                        {
                            <option>@item</option>
                        }
                     </InputSelect>
-                <div>
+                
+                    <br>
 
 
                         @if (ShiftTakenCheck())
                         {
-                            <div>
+                            
                             <label>Frivilliges navn: @volenteer.Name</label>
-                            </div>
+                            
                         }               
                 </div>
-                <button type="submit" @onclick="(() => ShiftUpdate(formContext))">Gem</button>
-                <button type="submit" @onclick="(() =>ShiftDelete(formContext))">Slet</button>
+                </div>
+                <br>
+                <button class="btn btn-primary" type="submit" @onclick="(() => ShiftUpdate(formContext))">Gem</button>
+                <button class="btn btn-primary" type="submit" @onclick="(() =>ShiftDelete(formContext))">Slet</button>
             </EditForm>
 
             
@@ -348,7 +352,7 @@ else
     }
 
 
-    private void ShiftAdd(EditContext formContext)
+    private async Task ShiftAdd(EditContext formContext)
     {
         bool formIsValid = formContext.Validate();
         if (formIsValid)
@@ -376,6 +380,7 @@ else
             shiftAdd.End_Time = shiftModel.End_Time;
 
             ShiftService.AddShift(shiftAdd);
+            shifts = (await ShiftService.GetAllShifts()).ToList();
         }
     }
     private void ShiftUpdate(EditContext formContext)

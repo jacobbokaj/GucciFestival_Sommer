@@ -22,8 +22,7 @@
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Login/Opret Konto
                     </NavLink>
-                </div>
-                <div class="nav-item px-3">
+                
                     <NavLink class="nav-link" href="index">
                         <span class="oi oi-home" aria-hidden="true"></span> Om projektet
                     </NavLink>
@@ -38,23 +37,25 @@
                     <NavLink class="nav-link" href="profil">
                         <span class="oi oi-home" aria-hidden="true"></span> Profil
                     </NavLink>
-                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftAdd))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Lav vagt
-                    </button>
 
 
-                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftsAvailable))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Ledige vagter
-                    </button>
+                    <NavLink class="nav-link"  @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftAdd))">
+                        <span class="oi oi-list" aria-hidden="true"></span> Opret vagt
+                    </NavLink>
 
 
-                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftsTaken))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Vagter taget
-                    </button>
+                    <NavLink class="nav-link"  @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftsAvailable))">
+                        <span class="oi oi-list" aria-hidden="true"></span> Ledige vagter
+                    </NavLink>
 
-                    <button @onclick="(() => CoordinatorPage(CoordinatorPages.Volenteers))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Frivillige
-                    </button>
+
+                    <NavLink class="nav-link" @onclick="(() => CoordinatorPage(CoordinatorPages.ShiftsTaken))">
+                        <span class="oi oi-list" aria-hidden="true"></span> Vagter taget
+                    </NavLink>
+
+                      <NavLink class="nav-link" @onclick="(() => CoordinatorPage(CoordinatorPages.Volenteers))">
+                        <span class="oi oi-list" aria-hidden="true"></span> oversigt af Frivillige
+                    </NavLink>
 
                 </div>
             </nav>
@@ -70,15 +71,16 @@
                     <NavLink class="nav-link" href="profil">
                         <span class="oi oi-home" aria-hidden="true"></span> Profil
                     </NavLink>
-                    <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsOwn))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Min vagtplan
-                    </button>
 
-                    <div class="nav-item px-3">
-                        <button @onclick="(() => VolenteerPage(VolenteerPages.ShiftsAvailable))">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Ledige vagter
-                        </button>
-                    </div>
+                     <NavLink class="nav-link"  @onclick="(() => VolenteerPage(VolenteerPages.ShiftsOwn))">
+                        <span class="oi oi-list" aria-hidden="true"></span> Min vagtplan
+                    </NavLink>
+
+                     <NavLink class="nav-link"  @onclick="(() => VolenteerPage(VolenteerPages.ShiftsAvailable))">
+                        <span class="oi oi-list" aria-hidden="true"></span> Ledige vagter
+                    </NavLink>
+
+
                 </div>
             </nav>
         </div>

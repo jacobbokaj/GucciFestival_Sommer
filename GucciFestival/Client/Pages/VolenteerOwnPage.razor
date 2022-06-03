@@ -10,7 +10,8 @@
 }
 else
 {
-    <h3>Frivlliges Navn:@Login.UserLogedin.Name </h3>
+    <h3> Din bruger: <small> @Login.UserLogedin.Name </small> </h3>
+    <br>
     @switch (volenteerPage)
     {
         case VolenteerPages.ShiftsAvailable:
@@ -34,7 +35,7 @@ else
                                 <td>@((Competences)forecast.Competence_Id)</td>
                                 <td>@forecast.Start_Time</td>
                                 <td>@forecast.End_Time</td>
-                                <button @onclick="(() => SetShiftTarget(forecast,VolenteerPages.ShiftAvailableRead))">Tag vagt</button>
+                                <button @onclick="(()=>SetShiftTarget(forecast,VolenteerPages.ShiftAvailableRead))" class="btn btn-primary">Tag vagt</button>
                             </tr>
                             
                         }
@@ -45,20 +46,20 @@ else
         case VolenteerPages.ShiftAvailableRead:
 
             <div>
-                <h4>Shift name @shiftTarget.Name</h4>
-
-                <h3>Start dato></h3>
-                <h3>@shiftTarget.Start_Time</h3>
-
-                <h3>Slut dato</h3>
-                <h3>@shiftTarget.End_Time</h3>
-
-                <h3>Description</h3>
-               
+                <h5> Vagtens navn:</h5>
+                <h6>@shiftTarget.Name</h6>
+                <br>
+                <h5>Denne vagt starter:</h5>
+                <h6>@shiftTarget.Start_Time</h6>
+                <br>
+                <h5>Denne vagt slutter</h5>
+                <h6>@shiftTarget.End_Time</h6>
+                <br>
+          
+                <h5>Hvis du vil tage vagten, markere boxen: </h5>     
                 
-                <h3>Sikker på at tage vagten?</h3>      
                 <input type="checkbox" @bind=shiftTakeCheckBoksFlag/>
-                <button @onclick=TakeShift>Tag vagten</button>
+                <button class="btn btn-primary" @onclick=TakeShift>Tag vagten</button>
             </div>
 
             break;

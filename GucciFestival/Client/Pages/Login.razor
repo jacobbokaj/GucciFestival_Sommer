@@ -13,73 +13,83 @@
 @switch (loginPage)
 {
     case LoginPages.StartPage:
-        <h3> Login in</h3>
-        <button @onclick="(()=>SetLoginPage(LoginPages.Login))" class="btn-outline-primary">log in</button>
-        <button @onclick="(()=>SetLoginPage(LoginPages.AddUser))" class="btn-outline-primary">opret bruger</button>
+
+
+
+
+        <h2> Login</h2>
+        <button @onclick="(()=>SetLoginPage(LoginPages.Login))" class="btn btn-primary" width="60" height="100">log in</button>
+        <button @onclick="(()=>SetLoginPage(LoginPages.AddUser))" class="btn btn-primary" width="60" height="100">opret bruger</button>
+
+
+
 
         break;
     case LoginPages.Login:
-        <h3>Log in </h3>
+        <h3>Login </h3>
+        <br>
         <h4>@userLoginMessage</h4>
         <EditForm Model=@loginModel
           Context="formContext">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <div class="col-3 mb-4">
-                <label for="Email">Email:</label>
+            <div class="col-md-5">
 
-                <InputText id="Email" @bind-Value="loginModel.Email" class="form-control" />
-            </div>
+                    <label for="Email">Email:</label>
 
-            <div class="col-4 mb-4">
-                <label for="Password">Password:</label>
-                <InputText id="Password" @bind-Value="loginModel.Password" class="form-control" />
-            </div>
-
-            <button type="submit" class="btn-outline-primary" @onclick="@(() => UserLogin(formContext))">Login</button>
-            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPages.StartPage))">MainSide</button>
+                    <InputText id="Email" @bind-Value="loginModel.Email" class="form-control" />
+                
+                    <label for="Password">Password:</label>
+                    <InputText id="Password" @bind-Value="loginModel.Password" class="form-control" />
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary" @onclick="@(() => UserLogin(formContext))">Login</button>
+                <button class="btn btn-primary" @onclick="(() => SetLoginPage(LoginPages.StartPage))">MainSide</button>
+            
         </EditForm>
         break;
     case LoginPages.AddUser:
         <EditForm EditContext=userAddContext OnValidSubmit=AddUserHandleValidSubmit>
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <div class="col-3 mb-4">
-                <label for="Name">Name:</label>
-                <InputText id="Name" @bind-Value="userAddModel.Name" class="form-control" />
+            <div class="row">
+
+
+                <div class="col-md-5">
+                    <label for="Name">Name:</label>
+                    <InputText id="Name" @bind-Value="userAddModel.Name" class="form-control" />
+                    
+
+                    <label for="Email">Email:</label>
+                    <InputText id="Email" @bind-Value="userAddModel.Email" class="form-control" />
+
+                    <label for="Password">Password:</label>
+                    <InputText id="Password" @bind-Value="userAddModel.Password" class="form-control" />
+                    
+                    <label for="Tlf">Tlf:</label>
+                    <InputNumber id="Tlf" @bind-Value="userAddModel.Phone" class="form-control" />
+                    
+                    <label for="Birthday">Birthday:</label>
+                    <InputDate id="Birthday" @bind-Value="userAddModel.Birthday" class="form-control" />
+                   
+                </div>
+
+                 <div class="col-md-5">
+                    @foreach (var item in competenceCheckBoxes)
+                    {
+                         <br>
+                         <li>
+                             <label>@((Competences)item.CompetenceIndex)</label>
+                             <InputCheckbox @bind-Value="item.HaveCompetenceFlag" />
+                         </li>
+                    }
+                 </div>
             </div>
-            <div class="col-3 mb-4">
-                <label for="Email">Email:</label>
-                <InputText id="Email" @bind-Value="userAddModel.Email" class="form-control" />
-            </div>
 
-            <div class="col-4 mb-4">
-                <label for="Password">Password:</label>
-                <InputText id="Password" @bind-Value="userAddModel.Password" class="form-control" />
-            </div>
-
-
-            <div class="col-4 mb-4">
-                <label for="Tlf">Tlf:</label>
-                <InputNumber id="Tlf" @bind-Value="userAddModel.Phone" class="form-control" />
-            </div>
-            <div class="col-4 mb-3">
-                <label for="Birthday">Birthday:</label>
-                <InputDate id="Birthday" @bind-Value="userAddModel.Birthday" class="form-control" />
-            </div>
-
-
-            @foreach (var item in competenceCheckBoxes)
-            {
-                <li>
-                    <label>@((Competences)item.CompetenceIndex)</label>
-                    <InputCheckbox @bind-Value="item.HaveCompetenceFlag" />
-                </li>
-            }
-
-            <button type="submit" class="btn-outline-primary">Lav frivllig konto</button>
-            <button class="btn-outline-primary" @onclick="(() => SetLoginPage(LoginPages.StartPage))">MainSide</button>
+            <button type="submit" class="btn btn-primary">Lav frivllig konto</button>
+            <button class="btn btn-primary" @onclick="(() => SetLoginPage(LoginPages.StartPage))">MainSide</button>
+            <h3>@userAddMessage</h3>
         </EditForm>
         break;
 }
@@ -111,11 +121,12 @@
     public IUserService UserService { get; set; }
     private List<User> users = new List<User>();
 
+    private string userAddMessage;
 
     protected override void OnInitialized()
     {
         //Resetter den statics variable for at den ikke stadig har det samme login
-        //F.eks. hvis man går tilbage med browser tilbage knappen 
+        //F.eks. hvis man går tilbage med browser tilbage knappen
         UserLogedin = null;
 
         userAddModel = new UserModel();
@@ -130,7 +141,9 @@
 
 
         //Besked, hvis der ikke findes nogen "user" med det login.
+
         userLoginMessage = string.Empty;
+        userAddMessage = string.Empty;
         //Ændre  navigations knapper i venstre side, til "forsiden".
         NavMenu.NavMenuChange(NavigateMenus.MainSide);
     }
@@ -148,6 +161,7 @@
     {
         NavMenu.NavMenuChange(NavigateMenus.MainSide);
         this.loginPage = startPage;
+        userAddMessage = string.Empty;
     }
 
 
@@ -166,7 +180,7 @@
                 }
             }
             if (UserLogedin != null)
-            {        
+            {
                 if (UserLogedin.Type_id == 2)
                 {
                     NavManager.NavigateTo("/volenteerOwnPage");
@@ -188,13 +202,14 @@
         bool foundDuplicate = false;
         foreach (var item in users)
         {
-            if(item.Email == userAddModel.Email)
+            if (item.Email == userAddModel.Email)
             {
                 foundDuplicate = true;
+                userAddMessage = "Email findes allerede";
             }
         }
-        if(foundDuplicate == false)
-        {           
+        if (foundDuplicate == false)
+        {
             Console.WriteLine("Hello handle Valid");
             User userAdd = new User();
             userAdd.Name = userAddModel.Name;
@@ -214,7 +229,8 @@
                 }
             }
 
-            await  UserService.AddUser(userAdd);
+            userAddMessage = "Frivillig bruger er lavet";
+            await UserService.AddUser(userAdd);
             users = (await UserService.GetAllUsers()).ToList();
         }
 
